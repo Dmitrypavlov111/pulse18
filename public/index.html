@@ -3,16 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Pulse 18+ | Games, Dating & VIP Store</title>
+  <title>Pulse 18+ | Games, Private Dating & VIP Store</title>
   
-  <!-- PWA & Mobile WebApp метатеги -->
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#ff2a85">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Pulse 18+">
 
-  <!-- Telegram Web App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
@@ -26,6 +24,7 @@
       --text: #f3f4f6;
       --text-muted: #9ca3af;
       --border: #24203d;
+      --success: #10b981;
     }
 
     * {
@@ -57,85 +56,24 @@
       border-right: 1px solid var(--border);
     }
 
-    /* ОНБОРДИНГ */
-    #onboarding-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(11, 9, 20, 0.98);
-      backdrop-filter: blur(15px);
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 24px;
-      pointer-events: auto;
-    }
-
-    #onboarding-modal.hidden {
-      display: none !important;
-      pointer-events: none !important;
-    }
-
-    .onboard-title {
-      font-size: 1.6rem;
-      font-weight: 800;
-      margin-bottom: 8px;
-      background: linear-gradient(90deg, var(--accent-pink), #ff7ebb);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .onboard-desc {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-bottom: 24px;
-      line-height: 1.4;
-    }
-
-    .choice-group {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 30px;
-    }
-
-    .choice-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 16px;
-      border-radius: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: all 0.2s;
-    }
-
-    .choice-card.selected {
-      border-color: var(--accent-pink);
-      background: rgba(255, 42, 133, 0.12);
-      box-shadow: 0 0 15px rgba(255, 42, 133, 0.25);
-    }
-
-    .choice-icon { font-size: 1.5rem; }
-    .choice-info b { display: block; color: #fff; font-size: 0.95rem; }
-    .choice-info span { font-size: 0.8rem; color: var(--text-muted); }
-
-    /* ШАПКА */
+    /* ШАПКА И ПОДМЕНЮ БЫСТРОГО ДОСТУПА */
     header {
-      padding: 14px 18px;
+      padding: 12px 16px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 10px;
       border-bottom: 1px solid var(--border);
-      background: rgba(11, 9, 20, 0.85);
-      backdrop-filter: blur(10px);
+      background: rgba(11, 9, 20, 0.92);
+      backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
       z-index: 50;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .brand {
@@ -143,7 +81,7 @@
       align-items: center;
       gap: 8px;
       font-size: 1.25rem;
-      font-weight: 800;
+      font-weight: 900;
       background: linear-gradient(90deg, var(--accent-pink), #ff7ebb);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -153,42 +91,76 @@
     .badge-18 {
       background: var(--accent-pink);
       color: #fff;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 900;
       padding: 2px 6px;
       border-radius: 4px;
       -webkit-text-fill-color: #fff;
     }
 
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-quick-install {
+      background: rgba(255, 42, 133, 0.15);
+      border: 1px solid var(--accent-pink);
+      color: #ff7ebb;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     .stars-badge {
       background: rgba(245, 158, 11, 0.15);
       border: 1px solid rgba(245, 158, 11, 0.4);
-      padding: 6px 12px;
-      border-radius: 20px;
+      padding: 6px 10px;
+      border-radius: 10px;
       color: var(--accent-gold);
       font-weight: 800;
-      font-size: 0.85rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-size: 0.75rem;
       cursor: pointer;
     }
 
-    /* БАННЕР PWA */
-    #pwa-install-banner {
-      display: none;
-      background: linear-gradient(135deg, rgba(255,42,133,0.18), rgba(139,92,246,0.18));
-      border: 1px solid var(--accent-pink);
-      border-radius: 14px;
-      padding: 12px 16px;
-      margin: 14px 18px 0;
+    /* АНОНИМНАЯ ПАНЕЛЬ */
+    .privacy-bar {
+      display: flex;
       align-items: center;
       justify-content: space-between;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+    }
+
+    .user-alias {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .privacy-tag {
+      color: var(--success);
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     main {
       flex: 1;
-      padding: 18px;
+      padding: 16px;
       padding-bottom: 90px;
       overflow-y: auto;
     }
@@ -196,7 +168,7 @@
     .screen { display: none; }
     .screen.active { display: block; }
 
-    /* НАВИГАЦИЯ */
+    /* НАВИГАЦИОННАЯ ПАНЕЛЬ */
     nav {
       position: fixed;
       bottom: 0;
@@ -220,10 +192,10 @@
       flex-direction: column;
       align-items: center;
       gap: 4px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 600;
       cursor: pointer;
-      padding: 8px;
+      padding: 6px;
     }
 
     .nav-btn svg { width: 22px; height: 22px; stroke: currentColor; }
@@ -232,15 +204,15 @@
     /* КНОПКИ */
     .btn-main {
       width: 100%;
-      padding: 15px;
+      padding: 14px;
       border-radius: 14px;
       border: none;
       background: linear-gradient(135deg, var(--accent-pink), #e01867);
       color: #fff;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 6px 20px rgba(255, 42, 133, 0.4);
+      box-shadow: 0 4px 18px rgba(255, 42, 133, 0.35);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -267,11 +239,19 @@
       background: none;
       border: none;
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 700;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       cursor: pointer;
-      padding: 6px 0;
+      padding: 4px 0;
+    }
+
+    .box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
     }
 
     /* ФИЛЬТРЫ ХАБА */
@@ -280,7 +260,7 @@
       gap: 8px;
       overflow-x: auto;
       padding-bottom: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .filter-btn {
       background: var(--card-bg);
@@ -288,7 +268,7 @@
       color: var(--text-muted);
       padding: 8px 14px;
       border-radius: 12px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       white-space: nowrap;
       cursor: pointer;
@@ -299,63 +279,108 @@
       color: #fff;
     }
 
-    /* КАРТОЧКИ ИГР */
-    .hub-grid { display: flex; flex-direction: column; gap: 12px; }
+    /* СПИСОК ИГР */
+    .hub-grid { display: flex; flex-direction: column; gap: 10px; }
     .game-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 16px;
+      padding: 14px;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       cursor: pointer;
       transition: transform 0.15s, border-color 0.15s;
     }
     .game-card:active { transform: scale(0.98); border-color: var(--accent-pink); }
     .game-icon-box {
-      width: 50px;
-      height: 50px;
-      border-radius: 14px;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
       background: rgba(255, 42, 133, 0.12);
       border: 1px solid rgba(255, 42, 133, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       flex-shrink: 0;
     }
     .game-info { flex: 1; pointer-events: none; }
-    .game-title { font-size: 1rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; }
-    .game-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; line-height: 1.3; }
+    .game-title { font-size: 0.95rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; }
+    .game-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 3px; line-height: 1.3; }
     .tag-pill {
-      font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+      font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 8px;
       background: rgba(255, 255, 255, 0.08); color: #d1d5db;
     }
     .tag-hot { background: rgba(255, 42, 133, 0.25); color: #ff7ebb; }
+
+    /* КУБИКИ */
+    .dice-stage { display: flex; gap: 12px; margin-bottom: 16px; }
+    .die-card {
+      flex: 1; height: 130px; background: var(--card-bg); border: 2px solid var(--border);
+      border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 10px; text-align: center;
+    }
+    .die-tag { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
+    .die-val { font-size: 0.95rem; font-weight: 800; color: #fff; line-height: 1.3; }
+
+    .timer-container { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 16px; text-align: center; }
+    .timer-display { font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; color: var(--accent-gold); }
+    .timer-bar { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+    .timer-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent-gold), var(--accent-pink)); }
+
+    /* РОУЛЕТКА */
+    .roulette-container { display: flex; flex-direction: column; align-items: center; position: relative; margin: 10px 0 18px; }
+    .wheel-pointer { width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 24px solid var(--accent-gold); position: absolute; top: -10px; z-index: 10; }
+    #roulette-canvas { border-radius: 50%; border: 4px solid var(--border); }
+
+    /* СВАЙПЫ */
+    .swipe-card {
+      background: var(--card-bg);
+      border: 2px solid var(--accent-purple);
+      border-radius: 20px;
+      padding: 24px 20px;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .swipe-badge { font-size: 0.75rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 8px; }
+    .swipe-title { font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+    .swipe-desc { font-size: 0.85rem; color: #d1d5db; line-height: 1.4; margin-bottom: 16px; }
+    .swipe-btns { display: flex; justify-content: center; gap: 14px; }
+    .swipe-circle-btn {
+      width: 56px; height: 56px; border-radius: 50%; border: 2px solid var(--border);
+      background: var(--card-bg); font-size: 1.5rem; display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+
+    /* АУКЦИОН */
+    .auction-bid-box { display: flex; justify-content: space-around; margin: 18px 0; }
+    .bid-btn {
+      padding: 12px 18px; border-radius: 12px; border: 1px solid var(--accent-pink);
+      background: rgba(255, 42, 133, 0.15); color: #fff; font-weight: 800; cursor: pointer;
+    }
 
     /* МАГАЗИН */
     .store-hero {
       background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(255, 42, 133, 0.2));
       border: 1px solid rgba(245, 158, 11, 0.4);
       border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 20px;
+      padding: 18px;
+      margin-bottom: 18px;
       text-align: center;
     }
-    .store-balance-title { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
     .store-balance-val { font-size: 2.2rem; font-weight: 900; color: var(--accent-gold); margin: 4px 0 12px; }
 
     .store-item {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 16px;
+      padding: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     .store-item-info b { display: block; font-size: 0.95rem; color: #fff; }
     .store-item-info span { font-size: 0.75rem; color: var(--text-muted); }
@@ -370,148 +395,100 @@
       cursor: pointer;
       white-space: nowrap;
     }
-    .btn-buy.purchased {
-      background: rgba(16, 185, 129, 0.2);
-      border: 1px solid #10b981;
-      color: #10b981;
+    .btn-buy.purchased { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #10b981; }
+
+    /* ПРИВАТНЫЙ ЧАТ */
+    .chat-container { display: flex; flex-direction: column; height: calc(100vh - 215px); }
+    .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 6px 0; }
+    .msg { padding: 8px 12px; border-radius: 12px; max-width: 82%; font-size: 0.85rem; line-height: 1.35; }
+    .msg.me { background: var(--accent-pink); align-self: flex-end; }
+    .msg.them { background: #24203d; align-self: flex-start; }
+    .msg-sender { font-size: 0.7rem; font-weight: 800; margin-bottom: 2px; opacity: 0.8; }
+    .chat-input-bar { display: flex; gap: 8px; margin-top: 10px; }
+    .chat-input-bar input {
+      flex: 1; background: var(--card-bg); border: 1px solid var(--border); padding: 12px 14px; border-radius: 12px; color: #fff; outline: none; font-size: 0.85rem;
     }
 
-    /* КУБИКИ */
-    .dice-stage { display: flex; gap: 14px; margin-bottom: 18px; }
-    .die-card {
-      flex: 1; height: 135px; background: var(--card-bg); border: 2px solid var(--border);
-      border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 12px; text-align: center;
+    /* МОДАЛКА УСТАНОВКИ */
+    #install-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(11, 9, 20, 0.92);
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
     }
-    .die-tag { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
-    .die-val { font-size: 0.95rem; font-weight: 800; color: #fff; line-height: 1.3; }
-
-    .timer-container { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 18px; text-align: center; }
-    .timer-display { font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; color: var(--accent-gold); }
-    .timer-bar { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 8px; }
-    .timer-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent-gold), var(--accent-pink)); }
-
-    /* КОЛЕСО */
-    .roulette-container { display: flex; flex-direction: column; align-items: center; position: relative; margin: 10px 0 20px; }
-    .wheel-pointer { width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 24px solid var(--accent-gold); position: absolute; top: -10px; z-index: 10; }
-    #roulette-canvas { border-radius: 50%; border: 4px solid var(--border); }
-
-    .shot-box {
-      background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 16px;
-    }
-
-    /* АУКЦИОН */
-    .auction-bid-box { display: flex; justify-content: space-around; margin: 20px 0; }
-    .bid-btn {
-      padding: 12px 18px; border-radius: 12px; border: 1px solid var(--accent-pink);
-      background: rgba(255, 42, 133, 0.15); color: #fff; font-weight: 800; cursor: pointer;
-    }
-
-    /* СВАЙПЫ */
-    .swipe-card {
-      background: var(--card-bg);
-      border: 2px solid var(--accent-purple);
+    .modal-content {
+      background: #17132a;
+      border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 24px 20px;
-      text-align: center;
-      margin-bottom: 20px;
+      padding: 22px;
+      max-width: 380px;
+      width: 100%;
     }
-    .swipe-badge { font-size: 0.75rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 8px; }
-    .swipe-title { font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
-    .swipe-desc { font-size: 0.85rem; color: #d1d5db; line-height: 1.4; margin-bottom: 16px; }
-    .swipe-btns { display: flex; justify-content: center; gap: 14px; }
-    .swipe-circle-btn {
-      width: 58px; height: 58px; border-radius: 50%; border: 2px solid var(--border);
-      background: var(--card-bg); font-size: 1.5rem; display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-    }
-
-    /* ЧАТ */
-    .dating-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 18px; }
-    .mini-chat { height: 130px; background: rgba(0, 0, 0, 0.25); border-radius: 12px; padding: 10px; overflow-y: auto; font-size: 0.85rem; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; }
-    .chat-msg { padding: 6px 10px; border-radius: 8px; max-width: 80%; }
-    .chat-msg.them { background: #24203d; align-self: flex-start; }
-    .chat-msg.me { background: var(--accent-pink); align-self: flex-end; }
-    .chat-container { display: flex; flex-direction: column; height: calc(100vh - 180px); }
-    .chat-feed { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-    .chat-input-bar { margin-top: 10px; display: flex; gap: 8px; }
-    .chat-input-bar input { flex: 1; background: var(--card-bg); border: 1px solid var(--border); padding: 12px 14px; border-radius: 12px; color: #fff; outline: none; }
-    .chat-input-bar button { padding: 12px 16px; background: var(--accent-purple); border: none; border-radius: 12px; color: #fff; font-weight: 700; cursor: pointer; }
   </style>
 </head>
 <body>
 
   <div id="app-container">
 
-    <!-- ОНБОРДИНГ -->
-    <div id="onboarding-modal">
-      <div class="onboard-title">Добро пожаловать в Pulse 18+</div>
-      <div class="onboard-desc">Подтвердите возраст 18+ и выберите формат взаимодействия для вашей ночи.</div>
-
-      <div class="choice-group">
-        <div class="choice-card selected" onclick="selectChoice(this)">
-          <span class="choice-icon">👩‍❤️‍👨</span>
-          <div class="choice-info">
-            <b>Играем со своей парой</b>
-            <span>Все игры 18+, аукционы власти, фетиши и горячие кубики</span>
-          </div>
-        </div>
-        <div class="choice-card" onclick="selectChoice(this)">
-          <span class="choice-icon">🔥</span>
-          <div class="choice-info">
-            <b>Знакомства и общение</b>
-            <span>Анонимный спид-дейтинг М+Ж, мини-игры и общий чат</span>
-          </div>
-        </div>
-      </div>
-
-      <button class="btn-main" onclick="finishOnboarding()">Мне есть 18 лет → Войти в приложение</button>
-    </div>
-
-    <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+    <!-- ВЕРХНЕЕ ПОДМЕНЮ -->
     <header>
-      <div class="brand" onclick="openScreen('hub')">
-        PULSE <span class="badge-18">18+</span>
+      <div class="header-top">
+        <div class="brand" onclick="openScreen('hub')">
+          PULSE <span class="badge-18">18+</span>
+        </div>
+        <div class="top-actions">
+          <button class="btn-quick-install" onclick="openInstallModal()">
+            📲 На экран
+          </button>
+          <div class="stars-badge" onclick="openScreen('store')">
+            ⭐ <span id="top-balance">150</span>
+          </div>
+        </div>
       </div>
-      <div class="stars-badge" onclick="openScreen('store')">
-        ⭐ <span id="top-balance">150</span> Stars
+
+      <!-- АНОНИМНАЯ ПАНЕЛЬ КОНФИДЕНЦИАЛЬНОСТИ -->
+      <div class="privacy-bar">
+        <div class="user-alias">
+          <span>🎭 Ник:</span>
+          <b id="user-display-name" style="color: var(--accent-cyan); cursor: pointer;" onclick="changeNickname()">Генерация...</b>
+        </div>
+        <div class="privacy-tag">
+          <span>🔒 Telegram ID скрыт</span>
+        </div>
       </div>
     </header>
 
-    <!-- ПЛАШКА PWA УСТАНОВКИ НА РАБОЧИЙ СТОЛ -->
-    <div id="pwa-install-banner">
-      <div>
-        <b style="color: #fff; font-size: 0.9rem; display: block;">Добавить ярлык</b>
-        <span style="color: var(--text-muted); font-size: 0.75rem;">Запуск в 1 клик с экрана смартфона</span>
-      </div>
-      <button class="btn-main" style="width: auto; padding: 8px 14px; font-size: 0.8rem; margin: 0;" onclick="installPWA()">
-        📲 Установить
-      </button>
-    </div>
-
     <main>
-      <!-- ЭКРАН 0: ХАБ ИГР -->
+      <!-- ЭКРАН 0: ХАБ ИГР (ВСЕ 12 ИГР) -->
       <section id="screen-hub" class="screen active">
 
-        <!-- ВИДЖЕТ «ЭКСПРЕСС-ЖЕЛАНИЕ» -->
-        <div class="shot-box" style="background: linear-gradient(135deg, rgba(255,42,133,0.15), rgba(139,92,246,0.15)); border-color: var(--accent-pink); margin-bottom: 16px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <b style="font-size: 0.95rem; color: #fff;">⚡ Экспресс-желание</b>
-            <span class="tag-pill tag-hot">СЕЙЧАС</span>
+        <!-- ЭКСПРЕСС-ЖЕЛАНИЕ -->
+        <div class="box" style="background: linear-gradient(135deg, rgba(255,42,133,0.15), rgba(139,92,246,0.15)); border-color: var(--accent-pink); margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <b style="font-size: 0.9rem; color: #fff;">⚡ Экспресс-желание прямо сейчас</b>
+            <span class="tag-pill tag-hot">HOT</span>
           </div>
-          <div style="font-size: 0.85rem; color: #d1d5db; line-height: 1.35; margin-bottom: 12px;" id="quick-spark-text">
-            Нажмите кнопку ниже, чтобы получить внезапное горячее действие прямо сейчас!
+          <div style="font-size: 0.8rem; color: #d1d5db; line-height: 1.35; margin-bottom: 10px;" id="quick-spark-text">
+            Нажмите кнопку ниже, чтобы получить спонтанное действие для разогрева!
           </div>
-          <button class="btn-main" style="padding: 10px; font-size: 0.9rem;" onclick="triggerQuickSpark()">
+          <button class="btn-main" style="padding: 10px; font-size: 0.85rem;" onclick="triggerQuickSpark()">
             🔥 Зажечь искру
           </button>
         </div>
 
         <div class="filter-tabs">
-          <button class="filter-btn active" onclick="filterGames('all', this)">Все игры (11)</button>
+          <button class="filter-btn active" onclick="filterGames('all', this)">Все игры (12)</button>
           <button class="filter-btn" onclick="filterGames('bed', this)">В постели</button>
-          <button class="filter-btn" onclick="filterGames('party', this)">Драйв и вечеринка</button>
-          <button class="filter-btn" onclick="filterGames('fetish', this)">Тайные желания</button>
+          <button class="filter-btn" onclick="filterGames('party', this)">Драйв</button>
+          <button class="filter-btn" onclick="filterGames('fetish', this)">Тайные табу</button>
         </div>
 
         <div class="hub-grid">
@@ -520,7 +497,7 @@
             <div class="game-icon-box">🎲</div>
             <div class="game-info">
               <div class="game-title">Кубики страсти <span class="tag-pill tag-hot">ХИТ</span></div>
-              <div class="game-desc">Действие + зона тела, 2 уровня страсти и таймер на 60с с виброоткликом.</div>
+              <div class="game-desc">Действие + зона тела, 2 уровня и таймер на 60с с вибрацией.</div>
             </div>
           </div>
 
@@ -529,7 +506,7 @@
             <div class="game-icon-box">🎡</div>
             <div class="game-info">
               <div class="game-title">Колесо фантазий</div>
-              <div class="game-desc">Вращающаяся рулетка: сенсорика, ролевые сценарии, абсолютный джекпот.</div>
+              <div class="game-desc">Вращающаяся рулетка: сенсорика, ролевые сценарии, джекпот.</div>
             </div>
           </div>
 
@@ -547,7 +524,7 @@
             <div class="game-icon-box">⏱</div>
             <div class="game-info">
               <div class="game-title">Правило 2 минут: Сенсорика</div>
-              <div class="game-desc">3 фазы чувств: лед и шепот, касания через ткань, строгий запрет на стоны.</div>
+              <div class="game-desc">3 фазы чувств: лед и шепот, касания через ткань, запрет на стоны.</div>
             </div>
           </div>
 
@@ -556,7 +533,7 @@
             <div class="game-icon-box">🪶</div>
             <div class="game-info">
               <div class="game-title">Штрафная рулетка: 5 касаний</div>
-              <div class="game-desc">5 текстур по телу. Если партнер издаст стон — штрафное подчинение!</div>
+              <div class="game-desc">5 текстур по телу. Если партнер издаст стон — штрафная поза!</div>
             </div>
           </div>
 
@@ -601,7 +578,7 @@
             <div class="game-icon-box">⚡</div>
             <div class="game-info">
               <div class="game-title">Контроль на грани (Edging) <span class="tag-pill tag-hot">HARD</span></div>
-              <div class="game-desc">Доведение до предела с запретом на оргазм без разрешения мастера.</div>
+              <div class="game-desc">Доведение до предела с запретом на финал без разрешения мастера.</div>
             </div>
           </div>
 
@@ -610,27 +587,65 @@
             <div class="game-icon-box">🤫</div>
             <div class="game-info">
               <div class="game-title">Игра в молчанку (Цена стона)</div>
-              <div class="game-desc">Повязка на глаза на 3 минуты. Стон = исполнение желания!</div>
+              <div class="game-desc">Повязка на глаза на 3 минуты. Любой стон = исполнение желания!</div>
+            </div>
+          </div>
+
+          <!-- 12 -->
+          <div class="game-card" data-cat="bed" onclick="openGame('blindmaze')">
+            <div class="game-icon-box">🙈</div>
+            <div class="game-info">
+              <div class="game-title">Слепой лабиринт: 4 стихии</div>
+              <div class="game-desc">Контраст льда, горячего дыхания и перьев по эрогенным точкам.</div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ЭКРАН МАГАЗИНА (VIP STORE) -->
+      <!-- ПРИВАТНЫЙ ЧАТ И ИНВАЙТ -->
+      <section id="screen-private-chat" class="screen">
+        <div class="box" style="margin-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <b style="font-size: 0.9rem; color: #fff;">Комната: <span id="room-code-tag" style="color: var(--accent-pink);">#X-849</span></b>
+            <span style="font-size: 0.7rem; color: var(--success); font-weight: 700;">● 100% Анонимно</span>
+          </div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px;">
+            Ваш реальный Telegram аккаунт скрыт. Никаких телефонов, юзернеймов и следов.
+          </div>
+          <button class="btn-main" style="padding: 10px; font-size: 0.85rem;" onclick="invitePartner()">
+            🔗 Пригласить партнера (Копировать инвайт)
+          </button>
+        </div>
+
+        <div class="chat-container">
+          <div class="chat-messages" id="private-messages">
+            <div class="msg them">
+              <div class="msg-sender">Система Pulse 18+</div>
+              Секретная комната активна. Отправьте ссылку партнеру кнопкой выше для начала игры на двух экранах.
+            </div>
+          </div>
+          <div class="chat-input-bar">
+            <input type="text" id="private-input" placeholder="Напишите тайное желание...">
+            <button class="btn-main" style="width: auto; padding: 10px 16px;" onclick="sendPrivateMsg()">Отправить</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ЭКРАН МАГАЗИНА STARS -->
       <section id="screen-store" class="screen">
         <button class="btn-back" onclick="openScreen('hub')">← В каталог игр</button>
         <div class="store-hero">
-          <div class="store-balance-title">Ваш баланс</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Баланс Telegram Stars</div>
           <div class="store-balance-val">⭐ <span id="store-balance">150</span> Stars</div>
-          <button class="btn-main" onclick="addBalance(100)">+ Пополнить на 100 Stars (Telegram)</button>
+          <button class="btn-main" onclick="addBalance(100)">+ Пополнить на 100 Stars</button>
         </div>
 
-        <div style="font-weight: 800; font-size: 1.1rem; margin-bottom: 12px; color: #fff;">Эксклюзивные Hardcore-колоды</div>
+        <div style="font-weight: 800; font-size: 1rem; margin-bottom: 12px; color: #fff;">Эксклюзивные Hardcore-колоды</div>
 
         <div class="store-item">
           <div class="store-item-info">
             <b>BDSM & Shibari Extreme</b>
-            <span>25 жестких заданий на связывание и доминирование</span>
+            <span>25 жестких заданий на связывание и подчинение</span>
           </div>
           <button class="btn-buy" id="btn-pack-bdsm" onclick="buyItem('btn-pack-bdsm', 70)">70 Stars</button>
         </div>
@@ -638,7 +653,7 @@
         <div class="store-item">
           <div class="store-item-info">
             <b>Грязный шепот (Dirty Talk)</b>
-            <span>Колода интимных команд и фраз на ухо во время секса</span>
+            <span>Колода интимных команд и фраз на ухо</span>
           </div>
           <button class="btn-buy" id="btn-pack-talk" onclick="buyItem('btn-pack-talk', 50)">50 Stars</button>
         </div>
@@ -646,36 +661,18 @@
         <div class="store-item">
           <div class="store-item-info">
             <b>Ролевые сценарии с диалогами</b>
-            <span>Готовые сценарии с репликами для нее и для него</span>
+            <span>Готовые сцены с репликами для двоих</span>
           </div>
           <button class="btn-buy" id="btn-pack-role" onclick="buyItem('btn-pack-role', 80)">80 Stars</button>
         </div>
-
-        <div style="font-weight: 800; font-size: 1.1rem; margin: 20px 0 12px; color: #fff;">Приватность и функции</div>
-
-        <div class="store-item">
-          <div class="store-item-info">
-            <b>Режим «Невидимка» (Incognito)</b>
-            <span>Скрывает ваш город и статус в чатах и знакомствах</span>
-          </div>
-          <button class="btn-buy" id="btn-feat-invis" onclick="buyItem('btn-feat-invis', 90)">90 Stars</button>
-        </div>
-
-        <div class="store-item">
-          <div class="store-item-info">
-            <b>Pulse Duo Pass (Синхронизация)</b>
-            <span>Связывает 2 смартфона в единую приватную комнату</span>
-          </div>
-          <button class="btn-buy" id="btn-feat-duo" onclick="buyItem('btn-feat-duo', 120)">120 Stars</button>
-        </div>
       </section>
 
-      <!-- 1: КУБИКИ СТРАСТИ -->
+      <!-- ИГРА 1: КУБИКИ СТРАСТИ -->
       <section id="game-dice" class="screen">
         <button class="btn-back" onclick="openScreen('hub')">← В каталог игр</button>
         <div class="dice-stage">
-          <div class="die-card" id="die-action"><span class="die-tag">Действие</span><div class="die-val" id="val-action">Поцеловать</div></div>
-          <div class="die-card" id="die-body"><span class="die-tag">Зона тела</span><div class="die-val" id="val-body">Шея и ключицы</div></div>
+          <div class="die-card"><span class="die-tag">Действие</span><div class="die-val" id="val-action">Поцеловать</div></div>
+          <div class="die-card"><span class="die-tag">Зона тела</span><div class="die-val" id="val-body">Шея и ключицы</div></div>
         </div>
         <div class="timer-container">
           <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;" id="timer-status">Готов</div>
@@ -686,7 +683,7 @@
         <button class="btn-secondary" onclick="toggleTimer()">⏱ Старт / Стоп (60с)</button>
       </section>
 
-      <!-- 2: КОЛЕСО ФАНТАЗИЙ -->
+      <!-- ИГРА 2: КОЛЕСО ФАНТАЗИЙ -->
       <section id="game-roulette" class="screen">
         <button class="btn-back" onclick="openScreen('hub')">← В каталог игр</button>
         <div class="roulette-container">
@@ -694,25 +691,25 @@
           <canvas id="roulette-canvas" width="300" height="300"></canvas>
         </div>
         <button class="btn-main" id="btn-spin" onclick="spinWheel()">🎡 Крутить колесо</button>
-        <div class="shot-box" id="roulette-result" style="display: none; margin-top: 14px; text-align: center;">
+        <div class="box" id="roulette-result" style="display: none; margin-top: 14px; text-align: center;">
           <div style="color: var(--accent-gold); font-size: 0.8rem; font-weight: 800;" id="res-cat">Сценарий</div>
           <div style="color: #fff; font-size: 0.95rem; font-weight: 700; margin-top: 4px;" id="res-desc">...</div>
         </div>
       </section>
 
-      <!-- 3: ШАГ ИЛИ РАЗДЕВАНИЕ -->
+      <!-- ИГРА 3: ШАГ ИЛИ РАЗДЕВАНИЕ -->
       <section id="game-strip" class="screen">
         <button class="btn-back" onclick="openScreen('hub')">← В каталог игр</button>
-        <div style="text-align: center; margin-bottom: 16px;">
+        <div style="text-align: center; margin-bottom: 14px;">
           <h2 style="font-size: 1.2rem; font-weight: 800; color: #fff;">Шаг или Раздевание</h2>
           <p style="font-size: 0.8rem; color: var(--text-muted);" id="strip-round-title">Раунд 1: Разогрев</p>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
-          <div class="shot-box" onclick="alert('Действие принято!')">
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
+          <div class="box" onclick="alert('Действие принято!')">
             <div style="font-size: 0.75rem; font-weight: 800; color: var(--accent-gold);">Вариант А: Действие</div>
             <div style="font-size: 0.95rem; font-weight: 700; color: #fff; margin-top: 4px;" id="strip-action-text">Шептать на ухо самое откровенное воспоминание 1 минуту.</div>
           </div>
-          <div class="shot-box" onclick="alert('Вещь снимается прямо сейчас!')">
+          <div class="box" onclick="alert('Вещь снимается прямо сейчас!')">
             <div style="font-size: 0.75rem; font-weight: 800; color: var(--accent-pink);">Вариант Б: Снять вещь</div>
             <div style="font-size: 0.95rem; font-weight: 700; color: #fff; margin-top: 4px;" id="strip-cloth-text">Снять верхнюю часть одежды с закрытыми глазами.</div>
           </div>
@@ -720,44 +717,39 @@
         <button class="btn-main" onclick="nextStripRound()">Следующий раунд 🔥</button>
       </section>
 
-      <!-- 4: СЕНСОРНЫЙ КОНТРОЛЬ -->
+      <!-- ИГРА 4: СЕНСОРНЫЙ КОНТРОЛЬ -->
       <section id="game-sensory" class="screen">
         <button class="btn-back" onclick="openScreen('hub')">← В каталог игр</button>
-        <div class="shot-box">
-          <div style="color: var(--accent-cyan); font-size: 0.8rem; font-weight: 800;" id="sensory-phase">Фаза 1 из 3 (2 Мин)</div>
-          <div style="font-size: 1.15rem; font-weight: 800; color: #fff; margin: 4px 0;" id="sensory-title">Звуки и контраст</div>
-          <div style="font-size: 0.85rem; color: #d1d5db;" id="sensory-rule">Завяжите партнеру глаза. Запрет на руки! Шепот, лед и дыхание.</div>
+        <div class="box">
+          <div style="color: var(--accent-cyan); font-size: 0.8rem; font-weight: 800;">Фаза 1 из 3 (2 Мин)</div>
+          <div style="font-size: 1.15rem; font-weight: 800; color: #fff; margin: 4px 0;">Звуки и контраст</div>
+          <div style="font-size: 0.85rem; color: #d1d5db;">Завяжите партнеру глаза. Запрет на руки! Шепот, лед и дыхание.</div>
         </div>
         <button class="btn-main" onclick="alert('Таймер на 2 минуты запущен!')">▶ Старт фазы (2 мин)</button>
       </section>
 
-      <!-- 5: 5 КАСАНИЙ -->
+      <!-- ИГРА 5: 5 КАСАНИЙ -->
       <section id="game-touch" class="screen">
         <button class="btn-back" onclick="openScreen('hub')">← В каталог игр</button>
-        <div id="touch-items-box" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;"></div>
+        <div id="touch-items-box" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;"></div>
         <button class="btn-main" onclick="generateTouches()">🎲 Новые 5 касаний</button>
       </section>
 
-      <!-- 6: СЕКРЕТНЫЙ КОНТРАКТ -->
+      <!-- ИГРА 6: СЕКРЕТНЫЙ КОНТРАКТ -->
       <section id="game-contract" class="screen">
         <button class="btn-back" onclick="openScreen('hub')">← В каталог игр</button>
-        <div id="contract-items-box" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;"></div>
-        <button class="btn-main" onclick="alert('Совпадение найдено: Эротический массаж всего тела с маслом!')">Вскрыть совпадения 🔥</button>
+        <div id="contract-items-box" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;"></div>
+        <button class="btn-main" onclick="alert('Совпадение найдено: Эротический массаж с маслом!')">Вскрыть совпадения 🔥</button>
       </section>
 
-      <!-- 7: СЛЕПОЙ АУКЦИОН ЖЕЛАНИЙ -->
+      <!-- ИГРА 7: СЛЕПОЙ АУКЦИОН ЖЕЛАНИЙ -->
       <section id="game-auction" class="screen">
         <button class="btn-back" onclick="openScreen('hub')">← В каталог игр</button>
-        <div style="text-align: center; margin-bottom: 14px;">
-          <h2 style="font-size: 1.2rem; font-weight: 800; color: #fff;">Слепой аукцион желаний</h2>
-          <p style="font-size: 0.8rem; color: var(--text-muted);">Тайная ставка очками страсти. Победитель правит!</p>
-        </div>
-        <div class="shot-box" style="text-align: center;">
+        <div class="box" style="text-align: center;">
           <div style="color: var(--accent-gold); font-size: 0.8rem; font-weight: 800;">ТЕКУЩИЙ ЛОТ</div>
           <div style="font-size: 1.1rem; font-weight: 800; color: #fff; margin: 8px 0;" id="auction-lot-title">«5 минут непрерывных оральных ласк»</div>
           <div style="font-size: 0.8rem; color: var(--text-muted);">Тот, чья ставка выше, получает ласки от партнера!</div>
         </div>
-        <div style="text-align: center; font-size: 0.9rem; font-weight: 700; margin-top: 10px;">Сделайте вашу тайную ставку:</div>
         <div class="auction-bid-box">
           <button class="bid-btn" onclick="makeBid(15)">15 LP</button>
           <button class="bid-btn" onclick="makeBid(30)">30 LP</button>
@@ -766,35 +758,27 @@
         <button class="btn-main" onclick="nextAuctionLot()">Следующий лот 💎</button>
       </section>
 
-      <!-- 8: ПРАВДА, ДЕЙСТВИЕ ИЛИ ШОТ -->
+      <!-- ИГРА 8: ПРАВДА, ДЕЙСТВИЕ ИЛИ ШОТ -->
       <section id="game-shots" class="screen">
         <button class="btn-back" onclick="openScreen('hub')">← В каталог игр</button>
-        <div style="text-align: center; margin-bottom: 14px;">
-          <h2 style="font-size: 1.2rem; font-weight: 800; color: #fff;">Правда, Действие или Шот</h2>
-          <p style="font-size: 0.8rem; color: var(--text-muted);">15 секунд на ответ или шот / минус вещь!</p>
-        </div>
-        <div class="shot-box">
+        <div class="box">
           <div style="color: var(--accent-cyan); font-size: 0.8rem; font-weight: 800;">❓ ПРАВДА</div>
-          <div style="font-size: 0.95rem; font-weight: 700; color: #fff; margin: 4px 0 12px;" id="shot-truth">«Какое самое табуированное порно или эротику ты смотрел(а) втайне?»</div>
+          <div style="font-size: 0.95rem; font-weight: 700; color: #fff; margin: 4px 0 10px;" id="shot-truth">«Какое самое табуированное порно ты смотрел(а) втайне?»</div>
           <div style="color: var(--accent-pink); font-size: 0.8rem; font-weight: 800;">⚡ ДЕЙСТВИЕ</div>
-          <div style="font-size: 0.95rem; font-weight: 700; color: #fff; margin: 4px 0 12px;" id="shot-action">«Сесть сверху на партнера и двигаться под музыку 60 секунд.»</div>
+          <div style="font-size: 0.95rem; font-weight: 700; color: #fff; margin: 4px 0 10px;" id="shot-action">«Сесть сверху на партнера и двигаться под музыку 60 секунд.»</div>
           <div style="color: #ef4444; font-size: 0.8rem; font-weight: 800;">🍸 ШТРАФ</div>
           <div style="font-size: 0.85rem; color: #d1d5db; margin-top: 4px;">Шот крепкого напитка или снять 2 вещи!</div>
         </div>
         <button class="btn-main" onclick="nextShotCard()">Следующая карточка 🍸</button>
       </section>
 
-      <!-- 9: ДОСКА ЖЕЛАНИЙ (TINDER 18+) -->
+      <!-- ИГРА 9: ДОСКА ЖЕЛАНИЙ (TINDER 18+) -->
       <section id="game-fetishmatch" class="screen">
         <button class="btn-back" onclick="openScreen('hub')">← В каталог игр</button>
-        <div style="text-align: center; margin-bottom: 14px;">
-          <h2 style="font-size: 1.2rem; font-weight: 800; color: #fff;">Доска желаний 18+</h2>
-          <p style="font-size: 0.8rem; color: var(--text-muted);">Свайпайте без стыда. Откроем только взаимные мэтчи!</p>
-        </div>
         <div class="swipe-card">
           <div class="swipe-badge" id="swipe-cat">Практика</div>
           <div class="swipe-title" id="swipe-title">Шибари (Связывание)</div>
-          <div class="swipe-desc" id="swipe-desc">Ограничение движений шелковыми лентами или мягкими веревками на кровати.</div>
+          <div class="swipe-desc" id="swipe-desc">Ограничение движений шелковыми лентами или веревками на кровати.</div>
           <div class="swipe-btns">
             <button class="swipe-circle-btn" style="color: #ef4444;" onclick="swipe('no')">✕</button>
             <button class="swipe-circle-btn" style="color: var(--accent-cyan);" onclick="swipe('maybe')">👆</button>
@@ -803,16 +787,12 @@
         </div>
       </section>
 
-      <!-- 10: КОНТРОЛЬ НА ГРАНИ (EDGING) -->
+      <!-- ИГРА 10: EDGING -->
       <section id="game-edging" class="screen">
         <button class="btn-back" onclick="openScreen('hub')">← В каталог игр</button>
-        <div style="text-align: center; margin-bottom: 16px;">
-          <h2 style="font-size: 1.2rem; font-weight: 800; color: #fff;">Контроль на грани</h2>
-          <p style="font-size: 0.8rem; color: var(--text-muted);">Доведи до предела, но запрети финишировать!</p>
-        </div>
-        <div class="shot-box" style="text-align: center;">
-          <div style="color: var(--accent-pink); font-size: 0.85rem; font-weight: 800; text-transform: uppercase;">ТЕКУЩИЙ КРУГ: 1 из 3</div>
-          <div style="font-size: 1.05rem; font-weight: 700; color: #fff; margin: 12px 0;">Ласкайте партнера любым способом. При приближении к финалу жмите кнопку «ГРАНЬ!»</div>
+        <div class="box" style="text-align: center;">
+          <div style="color: var(--accent-pink); font-size: 0.85rem; font-weight: 800;">ТЕКУЩИЙ КРУГ: 1 из 3</div>
+          <div style="font-size: 1.05rem; font-weight: 700; color: #fff; margin: 10px 0;">Ласкайте партнера. При приближении к финалу жмите «ГРАНЬ!»</div>
           <button class="btn-main" style="background: linear-gradient(135deg, #ef4444, #b91c1c);" onclick="triggerEdgingPause()">🛑 ГРАНЬ! (Стоп)</button>
         </div>
         <div class="timer-container" id="edging-timer-box" style="display: none;">
@@ -821,15 +801,11 @@
         </div>
       </section>
 
-      <!-- 11: ИГРА В МОЛЧАНКУ -->
+      <!-- ИГРА 11: ИГРА В МОЛЧАНКУ -->
       <section id="game-silence" class="screen">
         <button class="btn-back" onclick="openScreen('hub')">← В каталог игр</button>
-        <div style="text-align: center; margin-bottom: 16px;">
-          <h2 style="font-size: 1.2rem; font-weight: 800; color: #fff;">Игра в молчанку</h2>
-          <p style="font-size: 0.8rem; color: var(--text-muted);">Повязка на глаза на 3 минуты. Стон = исполнение желания!</p>
-        </div>
-        <div class="shot-box">
-          <div style="font-size: 0.95rem; font-weight: 700; color: #fff; line-height: 1.4;">Ведущий делает всё, что захочет. Если ведомый издаст стон или вздох громче шепота — ведущий получает право на абсолютно любое желание!</div>
+        <div class="box">
+          <div style="font-size: 0.95rem; font-weight: 700; color: #fff; line-height: 1.4;">Ведущий делает всё, что пожелает. Если ведомый издаст стон — ведущий получает право на абсолютно любое желание!</div>
         </div>
         <div class="timer-container">
           <div class="timer-display" id="silence-timer-val">03:00</div>
@@ -837,139 +813,154 @@
         <button class="btn-main" onclick="startSilenceTimer()">⏱ Начать испытание (3 мин)</button>
       </section>
 
-      <!-- ЭКРАН ЗНАКОМСТВА -->
-      <section id="screen-dating" class="screen">
-        <div class="dating-card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <span class="tag-pill" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd;">Уровень 1: Ледокол</span>
-            <span style="font-size: 0.8rem; color: var(--text-muted);">М + Ж</span>
-          </div>
-          <div style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 12px;">«Какое у тебя самое необычное скрытое хобби или сексуальная привычка?»</div>
-          <div class="mini-chat" id="mini-chat-feed">
-            <div class="chat-msg them"><b>Алина, 24:</b> Привет! Готова отвечать, только честно 😉</div>
-          </div>
-          <button class="btn-main" onclick="alert('Новый вопрос отправлен!')">🔥 Следующий вопрос</button>
+      <!-- ИГРА 12: СЛЕПОЙ ЛАБИРИНТ -->
+      <section id="game-blindmaze" class="screen">
+        <button class="btn-back" onclick="openScreen('hub')">← В каталог игр</button>
+        <div class="box">
+          <div style="color: var(--accent-cyan); font-size: 0.8rem; font-weight: 800;">СЕНСОРНЫЙ ЛАБИРИНТ</div>
+          <div style="font-size: 1.05rem; font-weight: 800; color: #fff; margin: 6px 0;" id="maze-step-title">Шаг 1: Контраст температур</div>
+          <div style="font-size: 0.85rem; color: #d1d5db; line-height: 1.4;" id="maze-step-desc">Проведите кубиком льда от щиколотки по внутренней стороне бедра, сразу согревая кожу горячим дыханием.</div>
         </div>
-      </section>
-
-      <!-- ЭКРАН ОБЩЕГО ЧАТА -->
-      <section id="screen-chat" class="screen">
-        <div class="chat-container">
-          <div class="chat-feed" id="main-chat-feed">
-            <div class="chat-msg them"><b>Макс:</b> Слепой аукцион — это нечто, проиграл 60 очков и 10 минут делал массаж 😂🔥</div>
-            <div class="chat-msg them"><b>Ева:</b> А мы во «Вскрытии желаний» нашли мэтч на связывание лентами!</div>
-          </div>
-          <div class="chat-input-bar">
-            <input type="text" id="chat-msg-input" placeholder="Напишите в 18+ чат...">
-            <button onclick="sendChatMessage()">Отправить</button>
-          </div>
-        </div>
+        <button class="btn-main" onclick="nextMazeStep()">Следующий маршрут 🙈</button>
       </section>
     </main>
 
-    <!-- НАВИГАЦИОННАЯ ПАНЕЛЬ -->
+    <!-- НАВИГАЦИЯ -->
     <nav>
       <button class="nav-btn active" onclick="switchNav('hub', this)">
         <svg fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
         Игры 18+
       </button>
+      <button class="nav-btn" id="nav-private" onclick="switchNav('private-chat', this)">
+        <svg fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        Приват-Чат
+      </button>
       <button class="nav-btn" onclick="switchNav('store', this)">
         <svg fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
         VIP Магазин
       </button>
-      <button class="nav-btn" onclick="switchNav('dating', this)">
-        <svg fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-        Знакомство
-      </button>
-      <button class="nav-btn" onclick="switchNav('chat', this)">
-        <svg fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-        Чат
-      </button>
     </nav>
+
+    <!-- МОДАЛКА УСТАНОВКИ НА ЭКРАН -->
+    <div id="install-modal" onclick="closeInstallModal(event)">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 8px;">📲 Добавить на экран смартфона</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 14px;">
+          Запуск в 1 касание без поисков в Telegram и рамок браузера:
+        </p>
+
+        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; font-size: 0.8rem;">
+          <b style="color: var(--accent-pink); display: block; margin-bottom: 4px;">iPhone (Safari):</b>
+          1. Нажмите иконку <b>«Поделиться»</b> (квадрат со стрелкой внизу).<br>
+          2. Выберите <b>«На экран «Домой»</b>.
+        </div>
+
+        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 14px; font-size: 0.8rem;">
+          <b style="color: var(--accent-cyan); display: block; margin-bottom: 4px;">Android / Telegram:</b>
+          Нажмите кнопку ниже или используйте три точки вверху экрана Telegram $\rightarrow$ <b>«Добавить на главный экран»</b>.
+        </div>
+
+        <button class="btn-main" onclick="triggerPWAInstall()" style="margin-bottom: 8px;">Установить ярлык</button>
+        <button class="btn-secondary" onclick="document.getElementById('install-modal').style.display='none'">Понятно</button>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    /* =========================================
-       0. PWA РЕГИСТРАЦИЯ И УСТАНОВКА ЯРЛЫКА
-       ========================================= */
-    let deferredPrompt = null;
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
-      });
+    /* 0. БЕЗОПАСНЫЙ STORAGE И ВИБРООТКЛИК */
+    function safeGet(key, def) {
+      try { const v = localStorage.getItem(key); return v !== null ? v : def; } catch (e) { return def; }
+    }
+    function safeSet(key, val) {
+      try { localStorage.setItem(key, val); } catch (e) {}
+    }
+    function safeVibrate(pattern) {
+      try { if (window.navigator?.vibrate) window.navigator.vibrate(pattern); } catch (e) {}
     }
 
+    /* 1. АНОНИМНЫЕ ПСЕВДОНИМЫ */
+    const NICK_PREFIXES = ['Тайный', 'Дикий', 'Дерзкий', 'Ночной', 'Скрытный', 'Горячий', 'Искусный', 'Бархатный'];
+    const NICK_NOUNS = ['Лорд', 'Кошка', 'Соблазнитель', 'Охотник', 'Пантера', 'Странник', 'Повелитель', 'Игрушка'];
+
+    function getOrCreateAlias() {
+      let saved = safeGet('pulse_anonymous_nick', null);
+      if (!saved) {
+        const p = NICK_PREFIXES[Math.floor(Math.random() * NICK_PREFIXES.length)];
+        const n = NICK_NOUNS[Math.floor(Math.random() * NICK_NOUNS.length)];
+        saved = `${p} ${n} #${Math.floor(100 + Math.random() * 900)}`;
+        safeSet('pulse_anonymous_nick', saved);
+      }
+      return saved;
+    }
+
+    function changeNickname() {
+      const p = NICK_PREFIXES[Math.floor(Math.random() * NICK_PREFIXES.length)];
+      const n = NICK_NOUNS[Math.floor(Math.random() * NICK_NOUNS.length)];
+      const fresh = `${p} ${n} #${Math.floor(100 + Math.random() * 900)}`;
+      safeSet('pulse_anonymous_nick', fresh);
+      document.getElementById('user-display-name').innerText = fresh;
+      safeVibrate(40);
+    }
+
+    /* 2. ПРИВАТНЫЕ КОМНАТЫ И ИНВАЙТ */
+    let currentRoom = safeGet('pulse_private_room', '#' + Math.floor(1000 + Math.random() * 9000));
+    safeSet('pulse_private_room', currentRoom);
+
+    function invitePartner() {
+      const inviteUrl = `https://t.me/share/url?url=${encodeURIComponent(window.location.origin)}&text=${encodeURIComponent('🔥 Приглашаю в секретную комнату Pulse 18+: ' + currentRoom)}`;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(`${window.location.origin}?room=${currentRoom}`);
+        alert('🔗 Ссылка в секретную комнату скопирована в буфер обмена! Отправьте её партнеру.');
+      } else {
+        window.open(inviteUrl, '_blank');
+      }
+    }
+
+    function sendPrivateMsg() {
+      const inp = document.getElementById('private-input');
+      const text = inp.value.trim();
+      if (!text) return;
+
+      const box = document.getElementById('private-messages');
+      const myNick = safeGet('pulse_anonymous_nick', 'Вы');
+      const msg = document.createElement('div');
+      msg.className = 'msg me';
+      msg.innerHTML = `<div class="msg-sender">${myNick}</div>${text}`;
+      box.appendChild(msg);
+
+      inp.value = '';
+      box.scrollTop = box.scrollHeight;
+    }
+
+    /* 3. УСТАНОВКА НА ЭКРАН (PWA) */
+    let pwaPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
-      deferredPrompt = e;
-      const banner = document.getElementById('pwa-install-banner');
-      if (banner) banner.style.display = 'flex';
+      pwaPrompt = e;
     });
 
-    function installPWA() {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === 'accepted') {
-            const banner = document.getElementById('pwa-install-banner');
-            if (banner) banner.style.display = 'none';
-          }
-          deferredPrompt = null;
-        });
+    function openInstallModal() {
+      document.getElementById('install-modal').style.display = 'flex';
+      safeVibrate(30);
+    }
+
+    function closeInstallModal(e) {
+      document.getElementById('install-modal').style.display = 'none';
+    }
+
+    function triggerPWAInstall() {
+      if (pwaPrompt) {
+        pwaPrompt.prompt();
+        pwaPrompt.userChoice.then(() => { pwaPrompt = null; });
       } else {
-        alert("Для установки ярлыка на экран:\n1. Нажмите «Поделиться» (иконка квадрата со стрелкой на iPhone/iPad).\n2. Выберите «На экран «Домой» (Add to Home Screen).");
+        alert("Для добавления значка:\n1. Нажмите меню Telegram (три точки вверху справа).\n2. Выберите «Добавить на главный экран».");
       }
+      document.getElementById('install-modal').style.display = 'none';
     }
 
-    /* =========================================
-       БЕЗОПАСНАЯ РАБОТА С STORAGE И ВИБРАЦИЕЙ
-       ========================================= */
-    function safeGet(key, def) {
-      try {
-        const v = localStorage.getItem(key);
-        return v !== null ? v : def;
-      } catch (e) {
-        return def;
-      }
-    }
-
-    function safeSet(key, val) {
-      try {
-        localStorage.setItem(key, val);
-      } catch (e) {}
-    }
-
-    function safeVibrate(pattern) {
-      try {
-        if (window.navigator && window.navigator.vibrate) {
-          window.navigator.vibrate(pattern);
-        }
-      } catch (e) {}
-    }
-
-    /* =========================================
-       ВИДЖЕТ «ЭКСПРЕСС-ЖЕЛАНИЕ»
-       ========================================= */
-    const QUICK_SPARKS = [
-      "Подойдите сзади, запустите руку под одежду партнера и крепко обнимите на 30 секунд.",
-      "Шепните партнеру на ухо точную позу, в которой хотите его/ее сегодня ночью.",
-      "Поцелуйте партнера с легким прикусыванием нижней губы прямо сейчас.",
-      "Проведите кончиками пальцев по внутренней стороне бедра партнера, не касаясь белья.",
-      "Загляните в глаза партнеру на 15 секунд без единого слова, медленно сокращая дистанцию."
-    ];
-
-    function triggerQuickSpark() {
-      safeVibrate([80, 40, 80]);
-      const pick = QUICK_SPARKS[Math.floor(Math.random() * QUICK_SPARKS.length)];
-      document.getElementById('quick-spark-text').innerText = pick;
-    }
-
-    /* =========================================
-       1. БАЛАНС И ОПЛАТА ЧЕРЕЗ TELEGRAM STARS
-       ========================================= */
+    /* 4. БАЛАНС И STARS */
     let userStars = parseInt(safeGet('pulse_stars', '150'));
-
     function updateBalanceUI() {
       const topEl = document.getElementById('top-balance');
       const storeEl = document.getElementById('store-balance');
@@ -986,95 +977,25 @@
     }
 
     function buyItem(btnId, cost) {
-      const tg = window.Telegram && window.Telegram.WebApp;
-      const itemMap = {
-        'btn-pack-bdsm': 'pack-bdsm',
-        'btn-pack-talk': 'pack-talk',
-        'btn-pack-role': 'pack-role',
-        'btn-feat-invis': 'feat-invis',
-        'btn-feat-duo':  'feat-duo'
-      };
-
-      const packId = itemMap[btnId];
-      if (!packId) return;
-
+      const tg = window.Telegram?.WebApp;
       const btn = document.getElementById(btnId);
-      if (btn && btn.classList.contains('purchased')) {
+      if (btn?.classList.contains('purchased')) {
         alert('Этот пак уже активен в вашей библиотеке!');
         return;
       }
-
-      if (tg && tg.initData) {
-        btn.innerText = 'Счет...';
-        fetch('/api/create-stars-invoice', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: (tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || 'demo_user',
-            packId: packId
-          })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.success && data.invoiceLink) {
-            tg.openInvoice(data.invoiceLink, (status) => {
-              if (status === 'paid') {
-                safeVibrate([150, 50, 150]);
-                btn.classList.add('purchased');
-                btn.innerText = 'Куплено ✓';
-                alert('🔥 Оплата прошла успешно! Пак разблокирован.');
-              } else {
-                btn.innerText = cost + ' Stars';
-              }
-            });
-          } else {
-            throw new Error();
-          }
-        })
-        .catch(() => {
-          btn.innerText = cost + ' Stars';
-          alert('Ошибка соединения с платежным сервером.');
-        });
+      if (userStars >= cost) {
+        safeVibrate([100, 50, 100]);
+        userStars -= cost;
+        updateBalanceUI();
+        btn.classList.add('purchased');
+        btn.innerText = 'Куплено ✓';
+        alert('Поздравляем! Пак успешно разблокирован.');
       } else {
-        if (userStars >= cost) {
-          userStars -= cost;
-          updateBalanceUI();
-          if (btn) {
-            btn.classList.add('purchased');
-            btn.innerText = 'Куплено ✓';
-          }
-          alert('Демо-покупка: пак активирован!');
-        } else {
-          alert('Недостаточно Stars! Пополните баланс.');
-        }
+        alert('Недостаточно Stars! Нажмите "Пополнить баланс" выше.');
       }
     }
 
-    /* =========================================
-       2. ОНБОРДИНГ
-       ========================================= */
-    function selectChoice(cardEl) {
-      safeVibrate(30);
-      const parent = cardEl.parentElement;
-      if (parent) {
-        parent.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected'));
-      }
-      cardEl.classList.add('selected');
-    }
-
-    function finishOnboarding() {
-      safeVibrate([100, 50, 100]);
-      safeSet('pulse_user_registered', 'true');
-      const modal = document.getElementById('onboarding-modal');
-      if (modal) {
-        modal.classList.add('hidden');
-      }
-      openScreen('hub');
-    }
-
-    /* =========================================
-       3. НАВИГАЦИЯ
-       ========================================= */
+    /* 5. НАВИГАЦИЯ */
     function hideAllScreens() {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     }
@@ -1097,9 +1018,7 @@
       safeVibrate(40);
       hideAllScreens();
       const target = document.getElementById('game-' + gameKey);
-      if (target) {
-        target.classList.add('active');
-      }
+      if (target) target.classList.add('active');
       if (gameKey === 'roulette') initRoulette();
     }
 
@@ -1115,67 +1034,70 @@
       });
     }
 
-    /* =========================================
-       4. КУБИКИ СТРАСТИ
-       ========================================= */
+    /* 6. ЭКСПРЕСС-ЖЕЛАНИЯ */
+    const SPARKS = [
+      "Подойдите сзади, запустите руку под одежду партнера и крепко прижмите к себе на 30 секунд.",
+      "Шепните партнеру на ухо точную позу, в которой хотите его/ее сегодня ночью.",
+      "Поцелуйте партнера с легким прикусыванием нижней губы прямо сейчас.",
+      "Проведите кончиками пальцев по внутренней стороне бедер партнера, не касаясь белья."
+    ];
+    function triggerQuickSpark() {
+      safeVibrate([80, 40, 80]);
+      document.getElementById('quick-spark-text').innerText = SPARKS[Math.floor(Math.random() * SPARKS.length)];
+    }
+
+    /* 7. КУБИКИ И ТАЙМЕРЫ */
     const DB_DICE = {
       actions: ['Нежно поцеловать', 'Оральная ласка (3 мин)', 'Связать руки за спиной', 'Шлёпать до румянца', 'Подышать теплом', 'Массаж с маслом'],
       bodies: ['Шея и ключицы', 'Ягодицы', 'Соски и грудь', 'Промежность / Клитор / Член', 'Позвоночник', 'Внутренняя часть бедра']
     };
-    let timerSeconds = 60, timerInterval = null, isTimerRunning = false;
+    let timerSec = 60, timerInt = null, isTimerOn = false;
 
     function rollDice() {
       safeVibrate(80);
-      const randomAction = DB_DICE.actions[Math.floor(Math.random() * DB_DICE.actions.length)];
-      const randomBody = DB_DICE.bodies[Math.floor(Math.random() * DB_DICE.bodies.length)];
-
-      document.getElementById('val-action').innerText = randomAction;
-      document.getElementById('val-body').innerText = randomBody;
-      resetTimer();
-      startTimer();
+      document.getElementById('val-action').innerText = DB_DICE.actions[Math.floor(Math.random() * DB_DICE.actions.length)];
+      document.getElementById('val-body').innerText = DB_DICE.bodies[Math.floor(Math.random() * DB_DICE.bodies.length)];
+      resetTimer(); startTimer();
     }
 
-    function toggleTimer() { if (isTimerRunning) pauseTimer(); else startTimer(); }
+    function toggleTimer() { if (isTimerOn) pauseTimer(); else startTimer(); }
     function startTimer() {
-      if (isTimerRunning) return;
-      isTimerRunning = true;
+      if (isTimerOn) return;
+      isTimerOn = true;
       document.getElementById('timer-status').innerText = 'Время пошло!';
-      timerInterval = setInterval(() => {
-        timerSeconds--;
-        const m = Math.floor(timerSeconds / 60), s = timerSeconds % 60;
-        document.getElementById('timer-val').innerText = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-        document.getElementById('timer-fill').style.width = ((timerSeconds / 60) * 100) + '%';
-        if (timerSeconds <= 0) {
-          clearInterval(timerInterval);
-          isTimerRunning = false;
+      timerInt = setInterval(() => {
+        timerSec--;
+        const m = Math.floor(timerSec / 60), s = timerSec % 60;
+        document.getElementById('timer-val').innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+        document.getElementById('timer-fill').style.width = ((timerSec / 60) * 100) + '%';
+        if (timerSec <= 0) {
+          clearInterval(timerInt); isTimerOn = false;
           document.getElementById('timer-status').innerText = 'Время вышло! 🔥';
           safeVibrate([250, 100, 250]);
         }
       }, 1000);
     }
-    function pauseTimer() { clearInterval(timerInterval); isTimerRunning = false; document.getElementById('timer-status').innerText = 'Пауза'; }
-    function resetTimer() { clearInterval(timerInterval); isTimerRunning = false; timerSeconds = 60; document.getElementById('timer-val').innerText = "01:00"; }
+    function pauseTimer() { clearInterval(timerInt); isTimerOn = false; document.getElementById('timer-status').innerText = 'Пауза'; }
+    function resetTimer() { clearInterval(timerInt); isTimerOn = false; timerSec = 60; document.getElementById('timer-val').innerText = "01:00"; }
 
-    /* =========================================
-       5. КОЛЕСО ФАНТАЗИЙ
-       ========================================= */
+    /* 8. РОУЛЕТКА (CANVAS) */
     const SECTORS = [
       { name: "Сенсорика", desc: "Повязка на глаза + лед и горячее дыхание 5 минут.", color: "#ff2a85" },
-      { name: "Ролевая", desc: "«Незнакомцы в баре»: 5 минут дерзкого флирта под вымышленными именами.", color: "#8b5cf6" },
+      { name: "Ролевая", desc: "«Незнакомцы в баре»: 5 минут дерзкого флирта под чужими именами.", color: "#8b5cf6" },
       { name: "Стриптиз", desc: "Партнер снимает вещь зубами под выбранный трек.", color: "#3b82f6" },
-      { name: "Массаж", desc: "5 минут эротического массажа в указанной партнером зоне.", color: "#10b981" },
+      { name: "Массаж", desc: "5 минут эротического массажа в указанной зоне.", color: "#10b981" },
       { name: "Контроль", desc: "Контроль темпа и поз: один подчиняется, второй правит.", color: "#f59e0b" },
       { name: "Джекпот", desc: "Абсолютная власть: любое интимное желание прямо сейчас!", color: "#ec4899" }
     ];
-    let currentAngle = 0, isSpinning = false;
+    let curAngle = 0, isSpin = false;
 
     function initRoulette() {
-      const canvas = document.getElementById('roulette-canvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d'), cx = 150, cy = 150, r = 145, arc = (2 * Math.PI) / SECTORS.length;
+      const cvs = document.getElementById('roulette-canvas');
+      if (!cvs) return;
+      const ctx = cvs.getContext('2d'), cx = 150, cy = 150, r = 145, arc = (2 * Math.PI) / SECTORS.length;
       ctx.clearRect(0, 0, 300, 300);
       SECTORS.forEach((sec, i) => {
-        const a = currentAngle + i * arc;
+        const a = curAngle + i * arc;
         ctx.beginPath(); ctx.fillStyle = sec.color; ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, a, a + arc); ctx.fill(); ctx.stroke();
         ctx.save(); ctx.translate(cx, cy); ctx.rotate(a + arc / 2); ctx.textAlign = "right"; ctx.fillStyle = "#fff"; ctx.font = "bold 13px sans-serif";
         ctx.fillText(sec.name, r - 16, 5); ctx.restore();
@@ -1184,47 +1106,44 @@
     }
 
     function spinWheel() {
-      if (isSpinning) return;
-      isSpinning = true;
-      const duration = 3000, start = Date.now(), startA = currentAngle, rot = (5 + Math.random() * 3) * 2 * Math.PI;
+      if (isSpin) return;
+      isSpin = true;
+      document.getElementById('btn-spin').disabled = true;
+      const duration = 3000, start = Date.now(), startA = curAngle, rot = (5 + Math.random() * 4) * 2 * Math.PI;
       const inter = setInterval(() => {
         const p = Math.min((Date.now() - start) / duration, 1);
-        currentAngle = startA + rot * (1 - Math.pow(1 - p, 3));
+        curAngle = startA + rot * (1 - Math.pow(1 - p, 3));
         initRoulette();
         if (p >= 1) {
-          clearInterval(inter);
-          isSpinning = false;
+          clearInterval(inter); isSpin = false;
+          document.getElementById('btn-spin').disabled = false;
           document.getElementById('roulette-result').style.display = 'block';
           document.getElementById('res-desc').innerText = SECTORS[Math.floor(Math.random() * SECTORS.length)].desc;
         }
       }, 20);
     }
 
-    /* =========================================
-       6. ШАГ ИЛИ РАЗДЕВАНИЕ
-       ========================================= */
+    /* 9. ШАГ ИЛИ РАЗДЕВАНИЕ */
     const STRIP_ROUNDS = [
       { r: "Раунд 1: Разогрев", a: "Шептать на ухо самое грязное воспоминание 1 минуту.", c: "Снять с себя верхнюю часть одежды с закрытыми глазами." },
       { r: "Раунд 2: Контакт", a: "2 минуты ласк ягодиц и бедер без рук (только губы и дыхание).", c: "Партнер сам снимает с тебя любую вещь зубами." },
       { r: "Раунд 3: Экстрим 🔥", a: "Партнер держит твои руки над головой 3 минуты и делает всё, что захочет.", c: "Снять всё оставшееся белье или выпить глоток с тела партнера." }
     ];
-    let stripIndex = 0;
+    let stripIdx = 0;
     function nextStripRound() {
-      stripIndex = (stripIndex + 1) % STRIP_ROUNDS.length;
-      document.getElementById('strip-round-title').innerText = STRIP_ROUNDS[stripIndex].r;
-      document.getElementById('strip-action-text').innerText = STRIP_ROUNDS[stripIndex].a;
-      document.getElementById('strip-cloth-text').innerText = STRIP_ROUNDS[stripIndex].c;
+      stripIdx = (stripIdx + 1) % STRIP_ROUNDS.length;
+      document.getElementById('strip-round-title').innerText = STRIP_ROUNDS[stripIdx].r;
+      document.getElementById('strip-action-text').innerText = STRIP_ROUNDS[stripIdx].a;
+      document.getElementById('strip-cloth-text').innerText = STRIP_ROUNDS[stripIdx].c;
     }
 
-    /* =========================================
-       7. КАСАНИЯ И КОНТРАКТ
-       ========================================= */
+    /* 10. КАСАНИЯ И КОНТРАКТ */
     function generateTouches() {
       const pool = ["Кончиками ногтей вдоль позвоночника", "Горячим дыханием в ямочку за ухом", "Губами по внутренней стороне бедра", "Кубиком льда по соскам", "Массажным маслом по пояснице"];
       const b = document.getElementById('touch-items-box');
       if (!b) return;
       b.innerHTML = '';
-      pool.forEach((t, i) => b.innerHTML += '<div class="shot-box" style="padding:10px 14px; margin-bottom:6px;"><b>' + (i+1) + '.</b> ' + t + '</div>');
+      pool.forEach((t, i) => b.innerHTML += `<div class="box" style="padding:10px 14px; margin-bottom:6px;"><b>${i+1}.</b> ${t}</div>`);
     }
 
     function initContract() {
@@ -1232,12 +1151,10 @@
       const b = document.getElementById('contract-items-box');
       if (!b) return;
       b.innerHTML = '';
-      desires.forEach(d => b.innerHTML += '<div class="shot-box" style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; margin-bottom:6px;"><span>' + d + '</span><div>🟢 🔴</div></div>');
+      desires.forEach(d => b.innerHTML += `<div class="box" style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; margin-bottom:6px;"><span>${d}</span><div>🟢 🔴</div></div>`);
     }
 
-    /* =========================================
-       8. АУКЦИОН ЖЕЛАНИЙ
-       ========================================= */
+    /* 11. АУКЦИОН */
     const AUCTION_LOTS = [
       "«5 минут непрерывных оральных ласк»",
       "«Связывание рук и полная беспомощность на 10 минут»",
@@ -1254,9 +1171,7 @@
       document.getElementById('auction-lot-title').innerText = AUCTION_LOTS[auctionIdx];
     }
 
-    /* =========================================
-       9. ШОТЫ
-       ========================================= */
+    /* 12. ШОТЫ */
     const SHOTS_DATA = [
       { t: "«Какое самое постыдное порно ты смотрел(а)?»", a: "«Сесть сверху на партнера и двигаться 60 секунд.»" },
       { t: "«О ком из общих знакомых у тебя были фантазии?»", a: "«Снять нижнее белье зубами партнера.»" },
@@ -1269,9 +1184,7 @@
       document.getElementById('shot-action').innerText = SHOTS_DATA[shotIdx].a;
     }
 
-    /* =========================================
-       10. ДОСКА ЖЕЛАНИЙ
-       ========================================= */
+    /* 13. TINDER СВАЙПЫ */
     const FETISHES = [
       { cat: "БДСМ & Контроль", title: "Шибари (Связывание)", desc: "Фиксация рук шелковыми лентами или веревками." },
       { cat: "Разговоры", title: "Dirty Talk", desc: "Пошлые, властные фразы и шепот на ухо во время процесса." },
@@ -1281,18 +1194,14 @@
     let fetishIdx = 0;
     function swipe(choice) {
       safeVibrate(60);
-      if (choice === 'yes') {
-        alert("🔥 Взаимный Мэтч! Партнер тоже выбрал эту практику!");
-      }
+      if (choice === 'yes') alert("🔥 Взаимный Мэтч! Партнер тоже выбрал эту практику!");
       fetishIdx = (fetishIdx + 1) % FETISHES.length;
       document.getElementById('swipe-cat').innerText = FETISHES[fetishIdx].cat;
       document.getElementById('swipe-title').innerText = FETISHES[fetishIdx].title;
       document.getElementById('swipe-desc').innerText = FETISHES[fetishIdx].desc;
     }
 
-    /* =========================================
-       11. EDGING И МОЛЧАНКА
-       ========================================= */
+    /* 14. EDGING, МОЛЧАНКА И ЛАБИРИНТ */
     function triggerEdgingPause() {
       safeVibrate([300, 100, 300]);
       const box = document.getElementById('edging-timer-box');
@@ -1300,7 +1209,7 @@
       let sec = 45;
       const inter = setInterval(() => {
         sec--;
-        document.getElementById('edging-timer-val').innerText = '00:' + (sec < 10 ? '0' : '') + sec;
+        document.getElementById('edging-timer-val').innerText = `00:${sec < 10 ? '0' : ''}${sec}`;
         if (sec <= 0) {
           clearInterval(inter);
           if (box) box.style.display = 'none';
@@ -1315,9 +1224,8 @@
       const el = document.getElementById('silence-timer-val');
       const inter = setInterval(() => {
         sec--;
-        const m = Math.floor(sec / 60);
-        const s = sec % 60;
-        if (el) el.innerText = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+        const m = Math.floor(sec / 60), s = sec % 60;
+        if (el) el.innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
         if (sec <= 0) {
           clearInterval(inter);
           safeVibrate([200, 100, 200]);
@@ -1326,37 +1234,28 @@
       }, 1000);
     }
 
-    /* =========================================
-       12. ЧАТ
-       ========================================= */
-    function sendChatMessage() {
-      const inp = document.getElementById('chat-msg-input');
-      if (!inp) return;
-      const val = inp.value.trim();
-      if (!val) return;
-      const feed = document.getElementById('main-chat-feed');
-      if (feed) {
-        const msg = document.createElement('div');
-        msg.className = 'chat-msg me';
-        msg.innerHTML = '<b>Вы:</b> ' + val;
-        feed.appendChild(msg);
-        inp.value = '';
-        feed.scrollTop = feed.scrollHeight;
-      }
+    const MAZE_STEPS = [
+      { t: "Шаг 1: Контраст температур", d: "Проведите кубиком льда от щиколотки по внутренней стороне бедра, сразу согревая кожу горячим дыханием." },
+      { t: "Шаг 2: Перо и шепот", d: "Легкими касаниями кисти проведите по ребрам и ямочкам на пояснице, шепча на ухо свои желания." },
+      { t: "Шаг 3: Массажное масло", d: "Разогрейте масло в ладонях и медленно массируйте ягодицы и бедра, не переходя к сексу 3 минуты." }
+    ];
+    let mazeIdx = 0;
+    function nextMazeStep() {
+      mazeIdx = (mazeIdx + 1) % MAZE_STEPS.length;
+      document.getElementById('maze-step-title').innerText = MAZE_STEPS[mazeIdx].t;
+      document.getElementById('maze-step-desc').innerText = MAZE_STEPS[mazeIdx].d;
     }
 
-    /* ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ */
+    /* ИНИЦИАЛИЗАЦИЯ */
     window.onload = function() {
-      if (safeGet('pulse_user_registered', 'false') === 'true') {
-        const modal = document.getElementById('onboarding-modal');
-        if (modal) modal.classList.add('hidden');
-      }
+      document.getElementById('user-display-name').innerText = getOrCreateAlias();
+      document.getElementById('room-code-tag').innerText = currentRoom;
       updateBalanceUI();
       initRoulette();
       generateTouches();
       initContract();
 
-      if (window.Telegram && window.Telegram.WebApp) {
+      if (window.Telegram?.WebApp) {
         window.Telegram.WebApp.ready();
         window.Telegram.WebApp.expand();
       }
