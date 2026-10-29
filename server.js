@@ -20,7 +20,6 @@ const WEBAPP_URL = process.env.WEBAPP_URL || `http://localhost:${PORT}`;
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Telegram-бот (только вход и инвайты, платежные шлюзы отключены для теста)
 if (BOT_TOKEN) {
   const bot = new Telegraf(BOT_TOKEN);
 
@@ -29,11 +28,11 @@ if (BOT_TOKEN) {
     const targetUrl = payload ? `${WEBAPP_URL}?room=${payload}` : WEBAPP_URL;
 
     ctx.reply(
-      '🔞 *PULSE 18+ | Игры желаний и знакомств*\n\n🔥 На расстоянии — управляй партнером через экран\n🛏 В спальне — 3D-кубики ласк, Edging и аукцион власти\n🥂 Знакомство — дерзкий флирт и радар анкет онлайн',
+      '🔞 *PULSE 18+ | Клуб взрослых игр и знакомств*\n\n🔥 Игры на расстоянии с отдельным чатом раунда\n🛏 Сценарии для спальни, 3D-кубики и аукцион власти\n🥂 Знакомства 18+ по анкетам (М/Ж, возраст)',
       {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.webApp('💋 Открыть PULSE 18+', targetUrl)]
+          [Markup.button.webApp('💋 Войти в PULSE 18+', targetUrl)]
         ])
       }
     );
@@ -44,25 +43,24 @@ if (BOT_TOKEN) {
     .catch((err) => console.error('Ошибка бота:', err.message));
 }
 
-// Хранилище онлайна и комнат
 const onlineUsers = new Map();
 const rooms = new Map();
 const globalHistory = [];
 
 function broadcastLobby() {
-  const list = Array.from(onlineUsers.values());
-  io.emit('lobby_users', list);
+  io.emit('lobby_users', Array.from(onlineUsers.values()));
 }
 
 io.on('connection', (socket) => {
-  // Регистрация анкеты пользователя
+  // 1. Регистрация анкеты (Ник, Пол М/Ж, Возраст, Вайб)
   socket.on('register_user', (profile) => {
+    const cleanAge = Math.max(18, Math.min(99, parseInt(profile.age, 10) || 25));
     onlineUsers.set(socket.id, {
       socketId: socket.id,
-      nickname: profile.nickname || 'Незнакомец',
-      gender: profile.gender || '🔥',
-      role: profile.role || 'Экспериментатор',
-      vibe: profile.vibe || 'Горячо',
+      nickname: String(profile.nickname || 'Инкогнито').slice(0, 20),
+      gender: profile.gender === 'Ж' ? 'Ж' : 'М',
+      age: cleanAge,
+      role: profile.role || 'По настроению',
       roomId: profile.roomId || ''
     });
     socket.join('global_channel');
@@ -70,8 +68,8 @@ io.on('connection', (socket) => {
     broadcastLobby();
   });
 
-  // Подключение к приватной комнате для двоих
-  socket.on('join_private_room', ({ roomId, nickname, gender, role }) => {
+  // 2. Вход в приватную комнату
+  socket.on('join_private_room', ({ roomId, nickname, gender, age, role }) => {
     for (const r of socket.rooms) {
       if (r !== socket.id && r !== 'global_channel') {
         socket.leave(r);
@@ -84,19 +82,23 @@ io.on('connection', (socket) => {
     }
 
     socket.join(roomId);
+    const cleanAge = Math.max(18, Math.min(99, parseInt(age, 10) || 25));
+    const cleanGender = gender === 'Ж' ? 'Ж' : 'М';
 
     if (onlineUsers.has(socket.id)) {
       const u = onlineUsers.get(socket.id);
       u.roomId = roomId;
-      if (nickname) u.nickname = nickname;
-      if (gender) u.gender = gender;
+      if (nickname) u.nickname = String(nickname).slice(0, 20);
+      u.gender = cleanGender;
+      u.age = cleanAge;
       if (role) u.role = role;
     }
 
     if (!rooms.has(roomId)) {
       rooms.set(roomId, {
         players: [],
-        messages: [],
+        whisperMessages: [], // ТОЛЬКО для раздела «Шепот»
+        gameMessages: [],    // ТОЛЬКО для чата внутри игры (На дистанции / Раунд)
         gameState: null,
         bids: {},
         swipes: {}
@@ -104,16 +106,25 @@ io.on('connection', (socket) => {
     }
 
     const room = rooms.get(roomId);
-    if (!room.players.find(p => p.socketId === socket.id)) {
+    const existing = room.players.find(p => p.socketId === socket.id);
+    if (!existing) {
       room.players.push({
         socketId: socket.id,
-        nickname: nickname || 'Гость',
-        gender: gender || '🔥',
+        nickname: String(nickname || 'Инкогнито').slice(0, 20),
+        gender: cleanGender,
+        age: cleanAge,
         role: role || 'Свитч'
       });
+    } else {
+      existing.nickname = String(nickname || existing.nickname).slice(0, 20);
+      existing.gender = cleanGender;
+      existing.age = cleanAge;
     }
 
-    socket.emit('private_history', room.messages);
+    // Отправляем раздельные истории чатов!
+    socket.emit('whisper_history', room.whisperMessages);
+    socket.emit('game_chat_history', room.gameMessages);
+
     io.to(roomId).emit('room_update', {
       roomId,
       players: room.players,
@@ -122,63 +133,85 @@ io.on('connection', (socket) => {
     broadcastLobby();
   });
 
-  // Вызов на игру из раздела «Знакомство» / «Общий чат»
-  socket.on('invite_from_lobby', ({ targetSocketId, fromNickname, fromGender, fromRole, roomId }) => {
+  // 3. Приглашение из раздела «Знакомство»
+  socket.on('invite_from_lobby', ({ targetSocketId, fromNickname, fromGender, fromAge, roomId }) => {
     io.to(targetSocketId).emit('incoming_invite', {
       fromNickname,
       fromGender,
-      fromRole,
+      fromAge,
       roomId
     });
   });
 
-  // Общий чат
-  socket.on('send_global_msg', ({ text, sender, gender, role }) => {
+  // 4. ЧАТ №1: Общий чат знакомств
+  socket.on('send_global_msg', ({ text, sender, gender, age }) => {
+    if (!text) return;
     const msg = {
-      sender,
-      gender: gender || '🔥',
-      role: role || '',
+      sender: String(sender || 'Гость').slice(0, 20),
+      gender: gender === 'Ж' ? 'Ж' : 'М',
+      age: Math.max(18, parseInt(age, 10) || 25),
       senderSocketId: socket.id,
       text: String(text).slice(0, 400),
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     globalHistory.push(msg);
-    if (globalHistory.length > 35) globalHistory.shift();
+    if (globalHistory.length > 40) globalHistory.shift();
     io.to('global_channel').emit('receive_global_msg', msg);
   });
 
-  // Приватный чат комнаты
-  socket.on('send_private_msg', ({ roomId, text, sender }) => {
-    if (!rooms.has(roomId)) return;
+  // 5. ЧАТ №2: Раздел «Шепот» (приватная переписка вне игр)
+  socket.on('send_whisper_msg', ({ roomId, text, sender, gender, age }) => {
+    if (!rooms.has(roomId) || !text) return;
     const msg = {
-      sender,
+      sender: String(sender || 'Партнер').slice(0, 20),
+      gender: gender === 'Ж' ? 'Ж' : 'М',
+      age: Math.max(18, parseInt(age, 10) || 25),
       senderSocketId: socket.id,
       text: String(text).slice(0, 400),
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     const room = rooms.get(roomId);
-    room.messages.push(msg);
-    if (room.messages.length > 50) room.messages.shift();
-    io.to(roomId).emit('receive_private_msg', msg);
+    room.whisperMessages.push(msg);
+    if (room.whisperMessages.length > 60) room.whisperMessages.shift();
+    io.to(roomId).emit('receive_whisper_msg', msg);
   });
 
-  // Синхронизация любого игрового режима между двумя телефонами
+  // 6. ЧАТ №3: Чат внутри активной игры (На расстоянии / Арена) — НЕ попадает в «Шепот»!
+  socket.on('send_game_msg', ({ roomId, text, sender, gender, age }) => {
+    if (!rooms.has(roomId) || !text) return;
+    const msg = {
+      sender: String(sender || 'Партнер').slice(0, 20),
+      gender: gender === 'Ж' ? 'Ж' : 'М',
+      age: Math.max(18, parseInt(age, 10) || 25),
+      senderSocketId: socket.id,
+      text: String(text).slice(0, 400),
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    const room = rooms.get(roomId);
+    room.gameMessages.push(msg);
+    if (room.gameMessages.length > 60) room.gameMessages.shift();
+    io.to(roomId).emit('receive_game_msg', msg);
+  });
+
+  // 7. Синхронизация состояния игры
   socket.on('sync_game_state', ({ roomId, state }) => {
     const room = rooms.get(roomId);
     if (!room) return;
     room.gameState = state;
     if (state?.resetBids) room.bids = {};
     if (state?.resetSwipes) room.swipes = {};
+    if (state?.clearGameChat) {
+      room.gameMessages = [];
+      io.to(roomId).emit('game_chat_history', []);
+    }
     io.to(roomId).emit('game_state_updated', state);
   });
 
-  // Общий синхронный таймер
   socket.on('start_sync_timer', ({ roomId, seconds }) => {
     const endTime = Date.now() + Number(seconds) * 1000;
     io.to(roomId).emit('timer_started', { endTime, seconds });
   });
 
-  // Слепой аукцион власти
   socket.on('submit_bid', ({ roomId, nickname, amount, lotTitle }) => {
     const room = rooms.get(roomId);
     if (!room) return;
@@ -199,7 +232,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Детектор совпадения желаний (Свайпы)
   socket.on('submit_swipe', ({ roomId, cardIndex, cardTitle, cardDesc, choice }) => {
     const room = rooms.get(roomId);
     if (!room) return;
