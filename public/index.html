@@ -3,25 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Pulse 18+ | Клуб тайных желаний</title>
+  <title>PULSE 18+ | Private Adult Club</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <style>
     :root {
-      --bg: #07070b;
-      --surface: #0f0f17;
-      --card-bg: rgba(20, 20, 32, 0.75);
-      --card-border: rgba(255, 42, 109, 0.22);
-      --accent: #ff2a6d;
-      --accent-glow: rgba(255, 42, 109, 0.45);
-      --purple: #9d4edd;
-      --purple-glow: rgba(157, 78, 221, 0.35);
+      --bg-deep: #06060a;
+      --bg-surface: #0e0e16;
+      --card-glass: rgba(20, 20, 32, 0.78);
+      --accent: #ff1e62;
+      --accent-soft: rgba(255, 30, 98, 0.16);
+      --accent-glow: rgba(255, 30, 98, 0.45);
+      --violet: #9d4edd;
+      --violet-glow: rgba(157, 78, 221, 0.4);
       --gold: #ffb703;
-      --gold-glow: rgba(255, 183, 3, 0.4);
-      --text: #f8f9fa;
-      --text-muted: #8e8ea6;
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --success: #00f5d4;
+      --gold-glow: rgba(255, 183, 3, 0.38);
+      --mint: #00f5d4;
+      --text-main: #f8f8fc;
+      --text-dim: #9292ab;
+      --border-light: rgba(255, 255, 255, 0.08);
+      --radius-lg: 20px;
+      --radius-md: 14px;
     }
 
     * {
@@ -29,12 +31,14 @@
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
-      user-select: none;
     }
 
     body {
-      background: radial-gradient(circle at 50% -10%, #2a0832 0%, var(--bg) 55%);
-      color: var(--text);
+      background-color: var(--bg-deep);
+      background-image:
+        radial-gradient(circle at 15% 5%, rgba(157, 78, 221, 0.22) 0%, transparent 45%),
+        radial-gradient(circle at 85% 0%, rgba(255, 30, 98, 0.22) 0%, transparent 50%);
+      color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
@@ -42,265 +46,297 @@
       padding-bottom: 110px;
     }
 
-    /* Верхний стеклянный бар */
+    /* ================= ВЕРХНИЙ БАР ================= */
     header {
-      padding: 16px 16px 12px;
-      text-align: center;
       position: sticky;
       top: 0;
-      background: rgba(7, 7, 11, 0.88);
+      z-index: 60;
+      background: rgba(6, 6, 10, 0.86);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      z-index: 50;
-      border-bottom: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-light);
+      padding: 12px 16px;
     }
 
-    .badge-wrap {
+    .header-top {
       display: flex;
-      justify-content: center;
-      gap: 8px;
+      justify-content: space-between;
       align-items: center;
-      margin-bottom: 4px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .badge-18 {
-      display: inline-block;
-      padding: 3px 10px;
-      font-size: 11px;
-      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--violet));
       color: #fff;
-      background: linear-gradient(135deg, var(--accent), var(--purple));
-      border-radius: 20px;
-      letter-spacing: 0.8px;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 8px;
       box-shadow: 0 0 12px var(--accent-glow);
     }
 
-    .badge-vip {
-      display: none;
-      padding: 3px 8px;
-      font-size: 10.5px;
-      font-weight: 800;
-      color: #000;
-      background: linear-gradient(135deg, #ffd166, #ffb703);
-      border-radius: 20px;
-      letter-spacing: 0.5px;
-      box-shadow: 0 0 10px var(--gold-glow);
-    }
-
-    h1 {
-      font-size: 21px;
+    .brand-title {
+      font-size: 19px;
       font-weight: 900;
       letter-spacing: 1.5px;
-      text-transform: uppercase;
-      background: linear-gradient(90deg, #ffffff 10%, #ff75a0 60%, #9d4edd 100%);
+      background: linear-gradient(90deg, #fff 20%, #ff7aa2 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    /* Баланс и валюта */
-    .balance-bar {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 6px;
-      font-size: 12px;
-      font-weight: 600;
+    .vip-pill {
+      display: none;
+      background: linear-gradient(135deg, #ffd166, var(--gold));
+      color: #140d00;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 7px;
+      border-radius: 20px;
+      box-shadow: 0 0 10px var(--gold-glow);
     }
 
-    .balance-item {
+    .wallet-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .coin-chip {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-light);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      color: var(--text-muted);
+      gap: 5px;
+      cursor: pointer;
     }
 
-    .balance-item b {
+    .coin-chip b {
+      color: var(--gold);
+    }
+
+    .profile-chip {
+      background: rgba(255, 30, 98, 0.14);
+      border: 1px solid rgba(255, 30, 98, 0.35);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
       color: #fff;
+      cursor: pointer;
     }
 
-    /* Блок подключения к комнате */
-    .room-card {
-      margin: 12px 16px 8px;
-      padding: 14px 16px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
+    /* ================= КАРТОЧКА КОМНАТЫ ================= */
+    .room-widget {
+      margin: 12px 14px 8px;
+      padding: 14px;
+      background: var(--card-glass);
+      border: 1px solid rgba(255, 30, 98, 0.25);
+      border-radius: var(--radius-lg);
       backdrop-filter: blur(18px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
-      position: relative;
-      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
-    .room-card::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 140px;
-      height: 140px;
-      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .room-meta {
+    .room-row-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+      font-size: 12.5px;
     }
 
-    .room-tag {
-      font-weight: 700;
+    .room-code-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-dim);
+    }
+
+    .room-code-box strong {
       color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 13px;
       letter-spacing: 0.5px;
     }
 
-    .online-indicator {
+    .online-pill {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       font-size: 12px;
-      color: var(--success);
       font-weight: 700;
+      color: var(--mint);
     }
 
-    .online-indicator::before {
+    .online-pill::before {
       content: '';
       width: 7px;
       height: 7px;
-      background: var(--success);
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--success);
+      background: var(--mint);
+      box-shadow: 0 0 8px var(--mint);
     }
 
-    .btn-row {
+    .players-avatars {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      font-size: 12px;
+    }
+
+    .player-tag {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-light);
+      padding: 4px 10px;
+      border-radius: 12px;
+      color: #e2e2ee;
+    }
+
+    .room-actions {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: 1.2fr 1fr 0.9fr;
+      gap: 8px;
     }
 
+    /* ================= КНОПКИ ================= */
     .btn {
       border: none;
-      padding: 12px 14px;
       border-radius: 12px;
-      font-size: 13px;
+      padding: 11px 12px;
+      font-size: 12.5px;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.14s ease, opacity 0.2s;
+      color: #fff;
     }
 
     .btn:active {
-      transform: scale(0.97);
+      transform: scale(0.96);
     }
 
-    .btn-glow {
-      background: linear-gradient(135deg, var(--accent) 0%, #c90a4b 100%);
-      color: #fff;
-      box-shadow: 0 4px 18px var(--accent-glow);
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, #c80e4b 100%);
+      box-shadow: 0 4px 16px var(--accent-glow);
     }
 
-    .btn-glass {
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--text);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+    .btn-violet {
+      background: linear-gradient(135deg, var(--violet) 0%, #6c2bd9 100%);
+      box-shadow: 0 4px 16px var(--violet-glow);
     }
 
     .btn-gold {
-      background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
-      color: #1a1001;
+      background: linear-gradient(135deg, #ffd166 0%, var(--gold) 100%);
+      color: #1a1100;
       font-weight: 800;
-      box-shadow: 0 4px 18px var(--gold-glow);
+      box-shadow: 0 4px 16px var(--gold-glow);
     }
 
-    /* Навигация табов */
-    .nav-tabs {
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border-light);
+      color: var(--text-main);
+    }
+
+    /* ================= НАВИГАЦИЯ ПО ВКЛАДКАМ ================= */
+    .tabs-bar {
       display: flex;
-      padding: 10px 14px 4px;
       gap: 6px;
+      padding: 6px 14px 10px;
       overflow-x: auto;
-      white-space: nowrap;
       scrollbar-width: none;
     }
+    .tabs-bar::-webkit-scrollbar { display: none; }
 
-    .nav-tabs::-webkit-scrollbar {
-      display: none;
-    }
-
-    .tab-btn {
+    .tab-item {
       flex: 1;
-      min-width: 82px;
-      padding: 9px 12px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-subtle);
+      min-width: max-content;
+      padding: 9px 13px;
       border-radius: 12px;
-      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-light);
+      color: var(--text-dim);
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
-      text-align: center;
       transition: all 0.2s ease;
+      position: relative;
     }
 
-    .tab-btn.active {
-      color: #fff;
+    .tab-item.active {
+      background: var(--accent-soft);
       border-color: var(--accent);
-      background: rgba(255, 42, 109, 0.16);
-      box-shadow: 0 0 12px var(--accent-glow);
+      color: #fff;
+      box-shadow: 0 0 14px rgba(255, 30, 98, 0.28);
     }
 
-    /* Секции контента */
-    .tab-content {
+    .unread-dot {
       display: none;
-      padding: 12px 16px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--mint);
+      display: inline-block;
+      margin-left: 4px;
+    }
+
+    /* ================= КОНТЕЙНЕРЫ ВКЛАДОК ================= */
+    .view-section {
+      display: none;
+      padding: 6px 14px 20px;
       flex-direction: column;
       gap: 14px;
     }
 
-    .tab-content.active {
+    .view-section.active {
       display: flex;
     }
 
-    .section-headline {
-      font-size: 11.5px;
+    .section-label {
+      font-size: 11px;
       font-weight: 800;
+      letter-spacing: 1.1px;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--text-muted);
+      color: var(--text-dim);
       display: flex;
       align-items: center;
       gap: 8px;
-      margin: 4px 2px 2px;
+      margin-top: 4px;
     }
 
-    .section-headline::after {
+    .section-label::after {
       content: '';
       flex: 1;
       height: 1px;
-      background: var(--border-subtle);
+      background: var(--border-light);
     }
 
-    /* Карточки игр и товаров */
+    /* ================= КАРТОЧКИ ИГР ================= */
     .game-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-subtle);
-      border-radius: 18px;
-      padding: 16px 18px;
+      background: var(--card-glass);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 9px;
       position: relative;
       overflow: hidden;
-      backdrop-filter: blur(14px);
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-
-    .game-card:active {
-      border-color: var(--accent);
     }
 
     .game-card::before {
@@ -308,639 +344,1566 @@
       position: absolute;
       left: 0;
       top: 0;
-      height: 100%;
+      bottom: 0;
       width: 4px;
       background: var(--accent);
-      border-radius: 18px 0 0 18px;
     }
 
-    .game-card.gold-card::before {
-      background: var(--gold);
+    .game-card.violet-accent::before { background: var(--violet); }
+    .game-card.gold-accent::before { background: var(--gold); }
+
+    .card-top-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .game-card.distance-card::before {
-      background: var(--purple);
-    }
-
-    .game-tag {
+    .card-badge {
       font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--accent);
+    }
+
+    .card-badge.violet { color: #c77dff; }
+    .card-badge.gold { color: var(--gold); }
+
+    .cards-count {
+      font-size: 11px;
+      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .game-card h3 {
+      font-size: 16.5px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .game-card p {
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text-dim);
+    }
+
+    /* ================= ЧАТЫ И ОНЛАЙН ЛОББИ ================= */
+    .lobby-strip {
+      background: var(--card-glass);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+
+    .lobby-list {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-top: 8px;
+      scrollbar-width: none;
+    }
+
+    .lobby-user-card {
+      min-width: 135px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .chat-frame {
+      background: var(--card-glass);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      height: 390px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      padding: 11px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border-light);
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .chat-history {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .msg-item {
+      max-width: 86%;
+      padding: 8px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 13px;
+      line-height: 1.4;
+      word-break: break-word;
+      align-self: flex-start;
+    }
+
+    .msg-item.mine {
+      align-self: flex-end;
+      background: rgba(255, 30, 98, 0.22);
+      border: 1px solid rgba(255, 30, 98, 0.35);
+    }
+
+    .msg-author {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 2px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .quick-whispers {
+      display: flex;
+      gap: 6px;
+      padding: 6px 10px;
+      overflow-x: auto;
+      border-top: 1px solid var(--border-light);
+      background: rgba(0, 0, 0, 0.25);
+      scrollbar-width: none;
+    }
+
+    .whisper-chip {
+      background: rgba(255, 30, 98, 0.14);
+      border: 1px solid rgba(255, 30, 98, 0.3);
+      color: #ffd0df;
+      padding: 4px 9px;
+      border-radius: 14px;
+      font-size: 11px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .chat-composer {
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.45);
+      border-top: 1px solid var(--border-light);
+    }
+
+    .chat-composer input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #fff;
+      font-size: 13.5px;
+      outline: none;
+    }
+
+    .chat-composer input:focus {
+      border-color: var(--accent);
+    }
+
+    /* ================= ПОЛНОЭКРАННЫЙ ИГРОВОЙ ДВИЖОК ================= */
+    #gameArenaModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      background: rgba(5, 5, 9, 0.96);
+      backdrop-filter: blur(18px);
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    .arena-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 10px;
+    }
+
+    .arena-mode-title {
+      font-size: 14px;
       font-weight: 800;
       color: var(--accent);
       text-transform: uppercase;
       letter-spacing: 0.8px;
     }
 
-    .game-tag.purple {
-      color: #c77dff;
+    .arena-body {
+      margin: 14px 0;
+      background: #12121e;
+      border: 1px solid rgba(255, 30, 98, 0.35);
+      border-radius: 22px;
+      padding: 20px 18px;
+      box-shadow: 0 0 35px rgba(255, 30, 98, 0.2);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
 
-    .game-tag.gold {
-      color: var(--gold);
+    .level-pills {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
     }
 
-    .game-card h3 {
-      font-size: 16px;
-      font-weight: 700;
+    .lvl-btn {
+      padding: 7px 4px;
+      font-size: 11px;
+      font-weight: 800;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-dim);
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+
+    .lvl-btn.active {
+      background: var(--violet);
+      color: #fff;
+      box-shadow: 0 0 12px var(--violet-glow);
+    }
+
+    .arena-card-title {
+      font-size: 19px;
+      font-weight: 800;
       color: #fff;
     }
 
-    .game-card p {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.45;
+    .arena-card-text {
+      font-size: 14.5px;
+      line-height: 1.5;
+      color: #e4e4f0;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border-light);
     }
 
-    /* Чаты */
-    .chat-container {
-      background: var(--card-bg);
-      border: 1px solid var(--border-subtle);
-      border-radius: 18px;
+    .penalty-box {
+      display: none;
+      background: rgba(255, 30, 98, 0.14);
+      border: 1px dashed var(--accent);
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      color: #ffb8ce;
+      font-weight: 600;
+    }
+
+    /* Таймер */
+    .sync-timer-box {
+      font-size: 32px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      color: var(--mint);
+      text-shadow: 0 0 14px rgba(0, 245, 212, 0.4);
+      margin: 4px 0;
+    }
+
+    /* Аукцион ползунок */
+    .bid-controls {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 14px;
+    }
+
+    .bid-slider {
+      width: 100%;
+      accent-color: var(--gold);
+    }
+
+    /* Встроенный мини-чат внутри игры */
+    .arena-mini-chat {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
-      height: 420px;
-      overflow: hidden;
-      backdrop-filter: blur(16px);
+      gap: 8px;
     }
 
-    .chat-head {
-      padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.03);
-      border-bottom: 1px solid var(--border-subtle);
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .chat-messages {
-      flex: 1;
-      padding: 14px;
+    .arena-chat-feed {
+      max-height: 95px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 5px;
+      font-size: 12px;
     }
 
-    .chat-bubble {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 8px 12px;
-      font-size: 13px;
-      line-height: 1.4;
-      word-break: break-word;
-      max-width: 90%;
-    }
-
-    .chat-bubble.own {
-      align-self: flex-end;
-      background: rgba(255, 42, 109, 0.18);
-      border: 1px solid rgba(255, 42, 109, 0.3);
-    }
-
-    .chat-bubble b {
-      color: var(--accent);
-    }
-
-    .chat-bubble .time {
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-left: 6px;
-    }
-
-    .chat-input-row {
-      display: flex;
-      gap: 8px;
-      padding: 10px 12px;
-      background: rgba(0, 0, 0, 0.4);
-      border-top: 1px solid var(--border-subtle);
-    }
-
-    .chat-input-row input {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 10px 12px;
-      color: #fff;
-      font-size: 13px;
-      outline: none;
-    }
-
-    .chat-input-row input:focus {
-      border-color: var(--accent);
-    }
-
-    /* Модальное окно синхронной игры */
-    #actionModal {
+    /* ================= МОДАЛКИ ПРОФИЛЯ, КОМНАТЫ И ИНВАЙТА ================= */
+    .overlay-modal {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.92);
-      backdrop-filter: blur(14px);
-      z-index: 100;
-      padding: 24px;
-      flex-direction: column;
-      justify-content: center;
+      z-index: 150;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
       align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .dialog-card {
+      background: #151524;
+      border: 1px solid var(--accent);
+      border-radius: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 340px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
       text-align: center;
     }
 
-    .modal-box {
-      background: #13131f;
-      border: 1px solid var(--accent);
-      border-radius: 22px;
-      padding: 24px 20px;
-      width: 100%;
-      max-width: 350px;
-      box-shadow: 0 0 35px var(--accent-glow);
-      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes modalPop {
-      0% { opacity: 0; transform: scale(0.92); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
-    .modal-box h2 {
-      font-size: 19px;
-      color: #fff;
-      margin-bottom: 8px;
-    }
-
-    .modal-box p {
-      font-size: 13.5px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      line-height: 1.45;
-    }
-
-    .modal-instruction {
-      background: rgba(255, 42, 109, 0.15);
-      border: 1px solid var(--accent);
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 700;
+    .dialog-card input {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 11px;
       color: #fff;
       font-size: 14px;
-      margin-bottom: 20px;
-      line-height: 1.45;
+      text-align: center;
+      outline: none;
     }
 
-    /* Всплывающие уведомления (Toast) */
+    .gender-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .gender-opt {
+      padding: 10px 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      font-size: 12px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .gender-opt.selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
     #toast {
       position: fixed;
       bottom: 24px;
       left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: rgba(20, 20, 30, 0.95);
+      transform: translateX(-50%) translateY(120px);
+      background: #19192b;
       border: 1px solid var(--accent);
       color: #fff;
       padding: 10px 18px;
-      border-radius: 20px;
+      border-radius: 24px;
       font-size: 13px;
-      font-weight: 600;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      z-index: 200;
+      font-weight: 700;
+      z-index: 250;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
       pointer-events: none;
+      text-align: center;
     }
-
-    #toast.show {
-      transform: translateX(-50%) translateY(0);
-    }
+    #toast.visible { transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
 
-  <!-- Хедер -->
+  <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
   <header>
-    <div class="badge-wrap">
-      <span class="badge-18">🔞 ADULT EXPERIENCES</span>
-      <span class="badge-vip" id="vipBadge">💎 VIP CLUB</span>
-    </div>
-    <h1>PULSE 18+</h1>
-    <div class="balance-bar">
-      <span class="balance-item">🔥 Токены: <b id="coinBalance">100</b></span>
-      <span class="balance-item">⭐ Stars: <b id="starBalance">0</b></span>
+    <div class="header-top">
+      <div class="brand-group">
+        <span class="badge-18">18+</span>
+        <span class="brand-title">PULSE</span>
+        <span class="vip-pill" id="vipBadge">VIP</span>
+      </div>
+      <div class="wallet-bar">
+        <div class="coin-chip" onclick="openTabById('tab-shop')">
+          🔥 <b id="uiCoins">120</b>
+        </div>
+        <div class="profile-chip" onclick="openProfileModal()" id="uiProfileBtn">
+          🎭 Профиль
+        </div>
+      </div>
     </div>
   </header>
 
-  <!-- Инфо о комнате и кнопки взаимодействия -->
-  <section class="room-card">
-    <div class="room-meta">
-      <span>Комната: <strong class="room-tag" id="lblRoom">...</strong></span>
-      <span class="online-indicator"><span id="lblOnline">1</span> в сети</span>
+  <!-- ПАНЕЛЬ ПРИВАТНОЙ КОМНАТЫ И СИНХРОНИЗАЦИИ -->
+  <section class="room-widget">
+    <div class="room-row-top">
+      <div class="room-code-box">
+        Код комнаты: <strong id="uiRoomCode">...</strong>
+      </div>
+      <div class="online-pill">
+        <span id="uiRoomCount">1</span> в комнате
+      </div>
     </div>
-    <div class="btn-row">
-      <button class="btn btn-glow" onclick="invitePartner()">🔗 Позвать пару</button>
-      <button class="btn btn-glass" onclick="addToScreen()">📲 На экран</button>
+    <div class="players-avatars" id="uiPlayersList">
+      <span class="player-tag">Подключение...</span>
+    </div>
+    <div class="room-actions">
+      <button class="btn btn-primary" onclick="shareRoomInvite()">🔗 Позвать пару</button>
+      <button class="btn btn-ghost" onclick="openJoinRoomModal()">🔑 Ввести код</button>
+      <button class="btn btn-ghost" onclick="addAppToHome()">📲 Иконка</button>
     </div>
   </section>
 
-  <!-- Меню табов -->
-  <nav class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab(event, 'tab-local')">🎮 В спальне</button>
-    <button class="tab-btn" onclick="switchTab(event, 'tab-distance')">⚡ Дистанция</button>
-    <button class="tab-btn" onclick="switchTab(event, 'tab-priv')">🔒 Шепот</button>
-    <button class="tab-btn" onclick="switchTab(event, 'tab-global')">💬 Общий хаб</button>
-    <button class="tab-btn" onclick="switchTab(event, 'tab-shop')">💎 Магазин</button>
+  <!-- НАВИГАЦИОННЫЕ ВКЛАДКИ -->
+  <nav class="tabs-bar">
+    <button class="tab-item active" data-target="tab-local" onclick="switchTab(this)">🎮 В спальне</button>
+    <button class="tab-item" data-target="tab-distance" onclick="switchTab(this)">⚡ На дистанции</button>
+    <button class="tab-item" data-target="tab-priv-chat" onclick="switchTab(this)">🔒 Шепот <span id="privUnread" style="display:none; color:var(--mint);">●</span></button>
+    <button class="tab-item" data-target="tab-global-chat" onclick="switchTab(this)">🌐 Общий хаб</button>
+    <button class="tab-item" data-target="tab-shop" onclick="switchTab(this)">💎 Магазин</button>
   </nav>
 
-  <!-- 1. ТАБ: В СПАЛЬНЕ -->
-  <main id="tab-local" class="tab-content active">
-    <div class="section-headline">Игры живого контакта</div>
+  <!-- ==================== 1. В СПАЛЬНЕ ==================== -->
+  <main id="tab-local" class="view-section active">
+    <div class="section-label">Интерактивные игры для двоих</div>
 
     <div class="game-card">
-      <div class="game-tag">Выдержка & Контроль</div>
-      <h3>Слепой стоп-кадр: 3 касания на грани</h3>
-      <p>По команде «ЗАМРИ!» ведомый застывает на 45 секунд без права шевелиться, пока ведущий ласкает чувствительные точки.</p>
-      <button class="btn btn-glow" onclick="launchGame('freeze')">🔥 Запустить вдвоем</button>
+      <div class="card-top-meta">
+        <span class="card-badge">Детектор желаний • 2 телефона</span>
+        <span class="cards-count">12 фетишей</span>
+      </div>
+      <h3>Тиндер Фетишей 18+</h3>
+      <p>Вы оба анонимно жмете «Хочу» или «Табу» на своих экранах. Игра раскроет карточку только если оба партнера ответили «Да»!</p>
+      <button class="btn btn-primary" onclick="startFetishMatcher()">💋 Начать сверку желаний</button>
     </div>
 
     <div class="game-card">
-      <div class="game-tag">Табу & Откровенность</div>
-      <h3>Ледяной допрос: Секрет за глоток</h3>
-      <p>15 секунд на откровенное признание. При уклонении — кубик льда скользит по внутренней стороне бедер без права свести ноги.</p>
-      <button class="btn btn-glow" onclick="launchGame('ice_truth')">🔥 Запустить вдвоем</button>
+      <div class="card-top-meta">
+        <span class="card-badge">Азарт и Доминирование</span>
+        <span class="cards-count">8 горячих лотов</span>
+      </div>
+      <h3>Слепой Аукцион Власти</h3>
+      <p>На кон выставляется право командовать в спальне. Делайте тайные ставки токенами — кто поставил больше, забирает абсолютную власть.</p>
+      <button class="btn btn-primary" onclick="startBlindAuction()">👑 Открыть торги</button>
     </div>
 
     <div class="game-card">
-      <div class="game-tag">Доминирование</div>
-      <h3>Аукцион подчинения: 10 минут власти</h3>
-      <p>Слепые ставки токенами страсти. Победитель раунда диктует позу, темп и любые команды в спальне без права вето.</p>
-      <button class="btn btn-glow" onclick="launchGame('auction')">🔥 Запустить вдвоем</button>
+      <div class="card-top-meta">
+        <span class="card-badge">Выдержка & Сенсорика</span>
+        <span class="cards-count">10 заданий + Таймер</span>
+      </div>
+      <h3>Слепой Стоп-Кадр & Температуры</h3>
+      <p>Команды с завязанными глазами, льдом и горячим дыханием. Включает синхронный таймер неподвижности на обоих телефонах.</p>
+      <button class="btn btn-primary" onclick="startDeckGame('sensory')">🔥 Запустить колоду</button>
     </div>
 
     <div class="game-card">
-      <div class="game-tag">Сенсорика & Контраст</div>
-      <h3>Температурный капкан: 4 рубежа</h3>
-      <p>Чередование кубика льда, горячего массажного масла и дыхания с завязанными глазами. Каждый вздох штрафуется.</p>
-      <button class="btn btn-glow" onclick="launchGame('sensory')">🔥 Запустить вдвоем</button>
+      <div class="card-top-meta">
+        <span class="card-badge">Откровенность или Наказание</span>
+        <span class="cards-count">12 вопросов + Штрафы</span>
+      </div>
+      <h3>Ледяной Допрос: 15 секунд</h3>
+      <p>Провокационные вопросы о тайных фантазиях. Не успел ответить за 15 секунд — открывается карта штрафной ласки без права отказа.</p>
+      <button class="btn btn-primary" onclick="startDeckGame('ice_truth')">🎲 Начать допрос</button>
     </div>
 
-    <div class="game-card">
-      <div class="game-tag">На грани оргазма</div>
-      <h3>Оргазмический замок (Edging Lock)</h3>
-      <p>Стимуляция нарастает. По сигналу «ГРАНЬ!» — пауза 45 секунд. Финал разрешен только после трех успешных кругов.</p>
-      <button class="btn btn-glow" onclick="launchGame('edging')">🔥 Запустить вдвоем</button>
-    </div>
-
-    <div class="game-card">
-      <div class="game-tag">Раскрепощение</div>
-      <h3>Контракт зеркала: Зрительный контакт</h3>
-      <p>Запрещено отводить взгляд от своего отражения в зеркале во время ласк и выполнения команд ведущего.</p>
-      <button class="btn btn-glow" onclick="launchGame('mirror')">🔥 Запустить вдвоем</button>
+    <div class="game-card gold-accent">
+      <div class="card-top-meta">
+        <span class="card-badge gold">Эксклюзивная колода</span>
+        <span class="cards-count" id="statusDeckBdsm">🔒 В магазине</span>
+      </div>
+      <h3>Абсолютное Повиновение: BDSM & Kink</h3>
+      <p>Жесткие сценарии связывания шелком, контроля оргазма (Edging) и ролевого подчинения для раскрепощенных пар.</p>
+      <button class="btn btn-gold" id="btnDeckBdsm" onclick="handleLockedDeck('deck_bdsm', 'bdsm')">🔒 Разблокировать (80 🔥)</button>
     </div>
   </main>
 
-  <!-- 2. ТАБ: НА ДИСТАНЦИИ -->
-  <main id="tab-distance" class="tab-content">
-    <div class="section-headline">Дистанционный импульс: 4 уровня напряжения</div>
+  <!-- ==================== 2. НА ДИСТАНЦИИ ==================== -->
+  <main id="tab-distance" class="view-section">
+    <div class="section-label">Возбуждение через экран + Чат внутри</div>
 
-    <div class="game-card distance-card">
-      <div class="game-tag purple">Уровень 1: Ментальный стриптиз</div>
-      <h3>Вскрытие триггеров</h3>
-      <p>«Какая мысль обо мне заставляет твое дыхание сбиваться, когда ты один(одна)?» Шепни ответ аудиосообщением в приватный чат.</p>
-      <button class="btn btn-glow" onclick="launchGame('dist_1')">⚡ Отправить вызов</button>
+    <div class="game-card violet-accent">
+      <div class="card-top-meta">
+        <span class="card-badge violet">Пошаговый квест • 4 уровня</span>
+        <span class="cards-count">20 заданий</span>
+      </div>
+      <h3>Дистанционный Импульс (Уровни 1–4)</h3>
+      <p>Плавный подъем возбуждения на расстоянии: от откровенных признаний шепотом до фантомных ласк, снятия одежды и общего Edging-таймера.</p>
+      <button class="btn btn-violet" onclick="startDistanceImpulse()">⚡ Запустить сеанс вдвоем</button>
     </div>
 
-    <div class="game-card distance-card">
-      <div class="game-tag purple">Уровень 2: Тактильный фантом</div>
-      <h3>Фантомное касание</h3>
-      <p>«Где бы оказались мои пальцы, стой я сейчас прямо за тобой?» Коснись этого места своей ладонью и опиши ощущения в чат.</p>
-      <button class="btn btn-glow" onclick="launchGame('dist_2')">⚡ Отправить вызов</button>
-    </div>
-
-    <div class="game-card distance-card">
-      <div class="game-tag purple">Уровень 3: Власть сквозь экран</div>
-      <h3>Приказ на раздевание</h3>
-      <p>Партнер вслух или текстом отдает команду, какую именно вещь ты обязан(а) снять в эту секунду без права отказаться.</p>
-      <button class="btn btn-glow" onclick="launchGame('dist_3')">⚡ Отправить приказ</button>
-    </div>
-
-    <div class="game-card distance-card">
-      <div class="game-tag purple">Уровень 4: Дистанционный Edging</div>
-      <h3>Оргазмический замок по связи</h3>
-      <p>Синхронный таймер на 90 секунд. Ласки разрешены исключительно по командам ведущего. Финал без прямого разрешения запрещен!</p>
-      <button class="btn btn-glow" onclick="launchGame('dist_4')">⚡ Запустить раунд</button>
+    <div class="game-card gold-accent">
+      <div class="card-top-meta">
+        <span class="card-badge gold">Экстрим на расстоянии</span>
+        <span class="cards-count" id="statusDeckDistPro">🔒 В магазине</span>
+      </div>
+      <h3>Грязные Секреты PRO (Аудио & Фото вызовы)</h3>
+      <p>Самые смелые дистанционные приказы: исчезающие фото, голосовые стоны на таймере и управление руками партнера через чат.</p>
+      <button class="btn btn-gold" id="btnDeckDistPro" onclick="handleLockedDeck('deck_dist_pro', 'dist_pro')">🔒 Разблокировать (70 🔥)</button>
     </div>
   </main>
 
-  <!-- 3. ТАБ: ПРИВАТНЫЙ ЧАТ -->
-  <main id="tab-priv" class="tab-content">
-    <div class="section-headline">Приватный шепот для двоих</div>
-    <div class="chat-container">
-      <div class="chat-head">
-        <span>🔒 ТОЛЬКО ВАША КОМНАТА</span>
-        <span style="color:var(--text-muted);">НЕ СОХРАНЯЕТСЯ</span>
+  <!-- ==================== 3. ПРИВАТНЫЙ ШЕПОТ ==================== -->
+  <main id="tab-priv-chat" class="view-section">
+    <div class="section-label">Приватный чат вашей комнаты</div>
+    <div class="chat-frame">
+      <div class="chat-header">
+        <span>🔒 Только для участников комнаты</span>
+        <span style="color:var(--mint);">Шифрование активно</span>
       </div>
-      <div class="chat-messages" id="privBox">
-        <div class="chat-bubble"><i>Сообщения шифруются на лету и доступны только участникам текущей комнаты.</i></div>
+      <div class="chat-history" id="privChatHistory">
+        <div class="msg-item"><i>Пригласите партнера по кнопке «Позвать пару» или из Общего хаба, чтобы общаться здесь наедине.</i></div>
       </div>
-      <div class="chat-input-row">
-        <input type="text" id="privInput" placeholder="Шепнуть сообщение..." onkeydown="if(event.key==='Enter') sendPrivMsg()">
-        <button class="btn btn-glow" style="padding: 8px 14px;" onclick="sendPrivMsg()">➤</button>
+      <div class="quick-whispers">
+        <span class="whisper-chip" onclick="sendQuickWhisper('🔥 Хочу тебя прямо сейчас...')">🔥 Хочу тебя</span>
+        <span class="whisper-chip" onclick="sendQuickWhisper('😈 Я уже без белья')">😈 Уже без белья</span>
+        <span class="whisper-chip" onclick="sendQuickWhisper('🤫 Замри и слушай меня')">🤫 Замри</span>
+        <span class="whisper-chip" onclick="sendQuickWhisper('💦 Я на самой грани...')">💦 На грани</span>
       </div>
-    </div>
-  </main>
-
-  <!-- 4. ТАБ: ОБЩИЙ ЧАТ -->
-  <main id="tab-global" class="tab-content">
-    <div class="section-headline">Общий хаб сообщества</div>
-    <div class="chat-container">
-      <div class="chat-head">
-        <span>🌐 ПУБЛИЧНЫЙ КЛУБ</span>
-        <span style="color:var(--text-muted);">ЗНАКОМСТВА</span>
-      </div>
-      <div class="chat-messages" id="globalBox">
-        <div class="chat-bubble"><i>Общайтесь, делитесь впечатлениями и приглашайте участников в приватные дуэли!</i></div>
-      </div>
-      <div class="chat-input-row">
-        <input type="text" id="globalInput" placeholder="Написать в клуб..." onkeydown="if(event.key==='Enter') sendGlobalMsg()">
-        <button class="btn btn-glow" style="padding: 8px 14px;" onclick="sendGlobalMsg()">➤</button>
+      <div class="chat-composer">
+        <input type="text" id="privChatInput" placeholder="Шепнуть партнеру..." onkeydown="if(event.key==='Enter') sendPrivateMessage()">
+        <button class="btn btn-primary" onclick="sendPrivateMessage()">➤</button>
       </div>
     </div>
   </main>
 
-  <!-- 5. ТАБ: МАГАЗИН ЖЕЛАНИЙ -->
-  <main id="tab-shop" class="tab-content">
-    <div class="section-headline">Витрина эксклюзивного контента</div>
-
-    <div class="game-card gold-card">
-      <div class="game-tag gold">Эксклюзивный доступ</div>
-      <h3>VIP-комната без цензуры</h3>
-      <p>Безлимитные таймеры, открытый доступ ко всем экстремальным практикам («BDSM & Kink») и защита от сбоев связи.</p>
-      <button class="btn btn-gold" onclick="buyItem('vip_room', 150, 'stars')">⭐ Купить за 150 Stars</button>
+  <!-- ==================== 4. ОБЩИЙ ХАБ И ОНЛАЙН ==================== -->
+  <main id="tab-global-chat" class="view-section">
+    <div class="section-label">Сейчас онлайн в клубе (нажми, чтобы позвать)</div>
+    <div class="lobby-strip">
+      <div style="font-size:12px; color:var(--text-dim);">Выбирай свободных игроков и зови в свою приватную комнату в 1 клик:</div>
+      <div class="lobby-list" id="lobbyUsersContainer">
+        <div style="font-size:12px; color:var(--text-dim);">Загрузка списка онлайн...</div>
+      </div>
     </div>
 
-    <div class="game-card gold-card">
-      <div class="game-tag gold">Игровая валюта</div>
-      <h3>Пак «500 Жетонов Страсти»</h3>
-      <p>Используются для тайных ставок в «Аукционе подчинения» и покупки штрафных карт для партнера.</p>
-      <button class="btn btn-gold" onclick="buyItem('coins_500', 75, 'stars')">⭐ Купить за 75 Stars</button>
-    </div>
-
-    <div class="game-card gold-card">
-      <div class="game-tag gold">Специальная колода</div>
-      <h3>Колода «Грязные тайны на дистанции»</h3>
-      <p>50 дерзких голосовых заданий и психологических триггеров для пар в разлуке.</p>
-      <button class="btn btn-gold" onclick="buyItem('deck_distance', 50, 'coins')">🔥 Купить за 50 Токенов</button>
-    </div>
-
-    <div class="game-card gold-card">
-      <div class="game-tag gold">Экстремальный пак</div>
-      <h3>Колода «Абсолютное повиновение»</h3>
-      <p>Жесткие карточки доминирования и сенсорного подчинения с таймерами до 10 минут.</p>
-      <button class="btn btn-gold" onclick="buyItem('deck_sub', 80, 'coins')">🔥 Купить за 80 Токенов</button>
+    <div class="section-label">Публичный флирт-чат 18+</div>
+    <div class="chat-frame" style="height: 310px;">
+      <div class="chat-header">
+        <span>🌐 Общий зал знакомств</span>
+        <span style="color:var(--text-dim);">Анонимные ники</span>
+      </div>
+      <div class="chat-history" id="globalChatHistory"></div>
+      <div class="chat-composer">
+        <input type="text" id="globalChatInput" placeholder="Написать в общий чат..." onkeydown="if(event.key==='Enter') sendGlobalMessage()">
+        <button class="btn btn-primary" onclick="sendGlobalMessage()">➤</button>
+      </div>
     </div>
   </main>
 
-  <!-- Модальное окно синхронной игры -->
-  <div id="actionModal">
-    <div class="modal-box">
-      <h2 id="modalTitle">Сценарий</h2>
-      <p id="modalDesc">Описание раунда</p>
-      <div class="modal-instruction" id="modalInstr">Команда</div>
-      <button class="btn btn-glass" style="width: 100%;" onclick="closeModal()">Завершить раунд</button>
+  <!-- ==================== 5. МАГАЗИН ЖЕЛАНИЙ ==================== -->
+  <main id="tab-shop" class="view-section">
+    <div class="section-label">Пополнение и закрытые колоды</div>
+
+    <div class="game-card gold-accent">
+      <div class="card-top-meta">
+        <span class="card-badge gold">Премиум статус</span>
+        <span class="cards-count">Все включено</span>
+      </div>
+      <h3>💎 VIP-Клуб (Открывает все колоды + 1000 🔥)</h3>
+      <p>Мгновенно разблокирует обе закрытые колоды («BDSM & Kink» и «Грязные Секреты PRO»), золотой VIP-значок и начисляет +1000 токенов для аукционов.</p>
+      <button class="btn btn-gold" onclick="purchaseStarsItem('vip_all', 'VIP Доступ Pulse 18+', 150)">⭐ Купить за 150 Telegram Stars</button>
+    </div>
+
+    <div class="game-card gold-accent">
+      <div class="card-top-meta">
+        <span class="card-badge gold">Валюта для ставок</span>
+        <span class="cards-count">Мгновенно</span>
+      </div>
+      <h3>🔥 Пакет «500 Токенов Страсти»</h3>
+      <p>Пополни баланс для побед в «Слепом Аукционе Власти» и мгновенного открытия эксклюзивных колод.</p>
+      <button class="btn btn-gold" onclick="purchaseStarsItem('coins_500', '500 Токенов Страсти', 65)">⭐ Купить за 65 Telegram Stars</button>
+    </div>
+
+    <div class="game-card">
+      <div class="card-top-meta">
+        <span class="card-badge">За внутриигровые токены</span>
+        <span class="cards-count">80 🔥</span>
+      </div>
+      <h3>Колода «Абсолютное Повиновение: BDSM»</h3>
+      <p>10 откровенных сценариев доминирования и контроля чувств. Копи токены в бесплатных раундах (+15 за ход) или открой сразу!</p>
+      <button class="btn btn-primary" id="shopBtnBdsm" onclick="buyWithCoins('deck_bdsm', 80)">🔥 Открыть за 80 Токенов</button>
+    </div>
+
+    <div class="game-card">
+      <div class="card-top-meta">
+        <span class="card-badge">За внутриигровые токены</span>
+        <span class="cards-count">70 🔥</span>
+      </div>
+      <h3>Колода «Грязные Секреты на Дистанции PRO»</h3>
+      <p>10 жестких аудио и фото-вызовов для пар на расстоянии, чтобы довести партнера до предела через экран.</p>
+      <button class="btn btn-primary" id="shopBtnDistPro" onclick="buyWithCoins('deck_dist_pro', 70)">🔥 Открыть за 70 Токенов</button>
+    </div>
+  </main>
+
+  <!-- ==================== ПОЛНОЭКРАННАЯ ИГРОВАЯ АРЕНА ==================== -->
+  <div id="gameArenaModal">
+    <div class="arena-top">
+      <span class="arena-mode-title" id="arenaModeName">ИГРОВОЙ РЕЖИМ</span>
+      <button class="btn btn-ghost" style="padding: 6px 12px; font-size: 12px;" onclick="closeArenaForBoth()">✕ Выйти</button>
+    </div>
+
+    <div class="arena-body">
+      <!-- Переключатель уровней (только для Дистанции) -->
+      <div class="level-pills" id="distanceLevelBar" style="display:none;">
+        <button class="lvl-btn active" onclick="setDistanceLevel(1)">Ур.1 Мысли</button>
+        <button class="lvl-btn" onclick="setDistanceLevel(2)">Ур.2 Тело</button>
+        <button class="lvl-btn" onclick="setDistanceLevel(3)">Ур.3 Камера</button>
+        <button class="lvl-btn" onclick="setDistanceLevel(4)">Ур.4 Грань</button>
+      </div>
+
+      <div style="font-size: 11.5px; color: var(--text-dim);" id="arenaSubInfo">Синхронный режим</div>
+      <div class="arena-card-title" id="arenaCardTitle">Загрузка...</div>
+      <div class="arena-card-text" id="arenaCardText">Подготовка колоды...</div>
+
+      <!-- Блок штрафного задания -->
+      <div class="penalty-box" id="arenaPenaltyBox"></div>
+
+      <!-- Синхронный таймер -->
+      <div class="sync-timer-box" id="arenaTimerDisplay" style="display:none;">00:45</div>
+
+      <!-- Управление Слепым Аукционом -->
+      <div class="bid-controls" id="arenaAuctionControls">
+        <div style="font-size:13px;">Ваша тайная ставка: <b id="bidValueLabel" style="color:var(--gold);">25</b> 🔥</div>
+        <input type="range" min="5" max="200" step="5" value="25" class="bid-slider" id="bidRangeInput" oninput="document.getElementById('bidValueLabel').innerText=this.value">
+        <button class="btn btn-gold" onclick="submitSecretBid()">👑 Сделать тайную ставку</button>
+      </div>
+
+      <!-- Кнопки Тиндера Фетишей -->
+      <div id="arenaFetishControls" style="display:none; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <button class="btn btn-ghost" onclick="sendFetishSwipe('no')">❌ Табу / Мимо</button>
+        <button class="btn btn-primary" onclick="sendFetishSwipe('yes')">🔥 Хочу попробовать!</button>
+      </div>
+
+      <!-- Стандартные кнопки колод и таймера -->
+      <div id="arenaDeckControls" style="display:flex; flex-direction:column; gap:8px;">
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-ghost" id="btnStartTimer" style="flex:1;" onclick="triggerSyncTimer(45)">⏱ Таймер 45с</button>
+          <button class="btn btn-ghost" id="btnShowPenalty" style="flex:1; display:none;" onclick="revealPenalty()">😈 Штраф</button>
+        </div>
+        <button class="btn btn-primary" onclick="nextSyncCard()">🔄 Следующая карта (+15 🔥)</button>
+      </div>
+    </div>
+
+    <!-- Встроенный живой мини-чат прямо внутри раунда -->
+    <div class="arena-mini-chat">
+      <div style="font-size:11px; color:var(--text-dim); display:flex; justify-content:space-between;">
+        <span>🔒 Быстрый шепот с партнером в игре:</span>
+        <span>Онлайн</span>
+      </div>
+      <div class="arena-chat-feed" id="arenaChatFeed"></div>
+      <div style="display:flex; gap:6px;">
+        <input type="text" id="arenaChatInput" placeholder="Написать прямо во время раунда..." style="flex:1; background:rgba(255,255,255,0.08); border:1px solid var(--border-light); border-radius:8px; padding:8px 10px; color:#fff; font-size:12.5px; outline:none;" onkeydown="if(event.key==='Enter') sendArenaWhisper()">
+        <button class="btn btn-primary" style="padding:8px 12px;" onclick="sendArenaWhisper()">➤</button>
+      </div>
     </div>
   </div>
 
-  <!-- Всплывающий тост -->
+  <!-- МОДАЛКА АНОНИМНОГО ПРОФИЛЯ -->
+  <div class="overlay-modal" id="profileModal">
+    <div class="dialog-card">
+      <h3>🎭 Анонимный образ</h3>
+      <p style="font-size:12.5px; color:var(--text-dim);">Ваш реальный Telegram скрыт. Укажите псевдоним и роль для клуба:</p>
+      <input type="text" id="inputNickname" maxlength="18" placeholder="Ваш псевдоним...">
+      <div class="gender-selector">
+        <div class="gender-opt selected" data-g="👨" onclick="pickGender(this)">👨 Он</div>
+        <div class="gender-opt" data-g="👩" onclick="pickGender(this)">👩 Она</div>
+        <div class="gender-opt" data-g="👩‍❤️‍👨" onclick="pickGender(this)">👩‍❤️‍👨 Пара</div>
+      </div>
+      <button class="btn btn-primary" onclick="saveProfile()">Сохранить образ</button>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА ВХОДА ПО КОДУ КОМНАТЫ -->
+  <div class="overlay-modal" id="joinRoomModal">
+    <div class="dialog-card">
+      <h3>🔑 Войти к партнеру</h3>
+      <p style="font-size:12.5px; color:var(--text-dim);">Введите код комнаты партнера (например, <b>room_4821</b>), чтобы соединить телефоны:</p>
+      <input type="text" id="inputRoomCode" placeholder="room_1234">
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-ghost" style="flex:1;" onclick="document.getElementById('joinRoomModal').style.display='none'">Отмена</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="confirmJoinRoom()">Войти</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА ВХОДЯЩЕГО ПРИГЛАШЕНИЯ ИЗ ХАБА -->
+  <div class="overlay-modal" id="incomingInviteModal">
+    <div class="dialog-card">
+      <h3>🔥 Приватный вызов!</h3>
+      <p style="font-size:13.5px; color:#fff;" id="inviteTextLabel">Игрок приглашает вас в приватную комнату для игры и чата 18+!</p>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-ghost" style="flex:1;" onclick="document.getElementById('incomingInviteModal').style.display='none'">Отклонить</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="acceptIncomingInvite()">Принять вызов</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast">Уведомление</div>
 
   <script>
+    // ================= ИНИЦИАЛИЗАЦИЯ TELEGRAM И ДАННЫХ =================
     const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.ready();
       tg.expand();
     }
 
-    // Профиль игрока
-    const user = tg?.initDataUnsafe?.user || {
-      first_name: 'Партнер',
-      id: 'u_' + Math.floor(Math.random() * 1000)
+    // Загрузка сохраненного прогресса из localStorage
+    const savedState = JSON.parse(localStorage.getItem('pulse18_save_v2') || '{}');
+    let state = {
+      nickname: savedState.nickname || ('Инкогнито_' + Math.floor(100 + Math.random() * 899)),
+      gender: savedState.gender || '🔥',
+      coins: typeof savedState.coins === 'number' ? savedState.coins : 120,
+      isVip: !!savedState.isVip,
+      unlocked: savedState.unlocked || { deck_bdsm: false, deck_dist_pro: false }
     };
 
-    // Определение комнаты
+    function persistState() {
+      localStorage.setItem('pulse18_save_v2', JSON.stringify(state));
+      refreshWalletAndShopUI();
+    }
+
+    // Определение стартовой комнаты из ссылки Telegram (?startapp=room_xxx или ?room=room_xxx)
     const urlParams = new URLSearchParams(window.location.search);
-    const startParam = tg?.initDataUnsafe?.start_param;
-    const currentRoom = startParam || urlParams.get('room') || 'room_' + Math.floor(1000 + Math.random() * 9000);
-    document.getElementById('lblRoom').innerText = currentRoom;
+    const tgStartParam = tg?.initDataUnsafe?.start_param;
+    let currentRoom = tgStartParam || urlParams.get('room') || ('room_' + Math.floor(1000 + Math.random() * 9000));
+    let pendingInviteRoom = null;
+    let timerInterval = null;
 
-    // Игровой баланс
-    let userCoins = 100;
-    let userStars = 0;
-    let isVip = false;
-
-    // База карточек игр
-    const GAMES_MAP = {
-      freeze: {
-        title: 'Слепой стоп-кадр: 3 касания на грани',
-        desc: 'Ведомый застывает неподвижно. Ведущий медленно ласкает самые чувствительные зоны кончиками пальцев или дыханием.',
-        action: 'Команда: «ЗАМРИ!» — 45 секунд абсолютной неподвижности без права шевелиться.'
-      },
-      ice_truth: {
-        title: 'Ледяной допрос: Секрет за глоток',
-        desc: '15 секунд на честный ответ. За уклонение — кубик льда скользит по внутренней стороне бедер.',
-        action: 'Вопрос: «О каком запретном сценарии ты думаешь прямо сейчас?»'
-      },
-      auction: {
-        title: 'Аукцион подчинения: 10 минут власти',
-        desc: 'Слепой торг за право безоговорочно отдавать любые команды в спальне.',
-        action: 'Победитель забирает статус «Повелитель» на 10 минут: задает любую позу и ритм!'
-      },
-      sensory: {
-        title: 'Температурный капкан: 4 рубежа',
-        desc: 'Контраст холода и тепла с завязанными глазами.',
-        action: 'Рубеж 1: Кубик льда медленно скользит по шее, ключицам и соскам.'
-      },
-      edging: {
-        title: 'Оргазмический замок (Edging Lock)',
-        desc: 'Стимуляция нарастает. Завершать без команды строго запрещено.',
-        action: 'Круг 1: Дойти до грани и крикнуть «ГРАНЬ!», ведущий делает паузу на 45 сек.'
-      },
-      mirror: {
-        title: 'Контракт зеркала: Зрительный контакт',
-        desc: 'Взгляд строго в отражение. Отводить глаза запрещено.',
-        action: 'Смотреть только на себя в зеркало во время прикосновений следующие 60 секунд.'
-      },
-      dist_1: {
-        title: 'Уровень 1: Ментальный стриптиз',
-        desc: 'Честное признание на расстоянии без зрительного контакта.',
-        action: 'Задание: Отправь партнеру в приватный чат аудиошепотом свой самый откровенный триггер.'
-      },
-      dist_2: {
-        title: 'Уровень 2: Тактильный фантом',
-        desc: 'Перевод мыслей в телесный импульс сквозь экраны.',
-        action: 'Задание: Положи ладонь на ключицу, закрой глаза на 30 секунд и опиши жар в чат.'
-      },
-      dist_3: {
-        title: 'Уровень 3: Власть сквозь экран',
-        desc: 'Отказ от инициативы на расстоянии.',
-        action: 'Приказ: Партнер пишет в чат, какую именно вещь ты обязан(а) снять прямо сейчас.'
-      },
-      dist_4: {
-        title: 'Уровень 4: Дистанционный Edging',
-        desc: 'Синхронное удержание на грани развязки.',
-        action: 'Запуск таймера на 90 секунд: ласки только по командам партнера. Финишировать нельзя!'
-      }
+    // ================= БАЗЫ ПРОДУМАННЫХ ИГР 18+ =================
+    const DECKS = {
+      sensory: [
+        { title: 'Слепой Стоп-Кадр: Замри', text: 'Ведомый закрывает глаза и заводит руки за голову. По сигналу таймера ведомому запрещено шевелиться и издавать звуки 45 секунд, пока ведущий целует и ласкает шею, грудь и внутреннюю сторону бедер.', timer: 45 },
+        { title: 'Ледяной Контур', text: 'Возьмите кубик льда (или холодный бокал). Медленно ведите им от ключиц через соски вниз к линии белья, согревая мокрый след горячим дыханием в миллиметре от кожи.', timer: 60 },
+        { title: 'Запретный Миллиметр', text: 'Ведущий водит кончиками пальцев и губами в 1 сантиметре от самой интимной зоны партнера ровно 60 секунд, не касаясь её напрямую. Партнеру запрещено двигать бедрами навстречу!', timer: 60 },
+        { title: 'Шелковый Плен', text: 'Свяжите запястья партнера мягким шарфом, ремнем или тканью. В течение 90 секунд вы полностью распоряжаетесь темпом прикосновений, чередуя нежные поглаживания и ощутимые захваты бедер.', timer: 90 },
+        { title: 'Зеркальный Контракт', text: 'Встаньте позади партнера перед зеркалом. Партнер обязан неотрывно смотреть на ваше отражение, пока ваши руки скользят под одеждой, изучая грудь и низ живота.', timer: 60 },
+        { title: 'Проверка Тишиной', text: 'Снимите с партнера один предмет одежды зубами или одной рукой. Следующие 45 секунд ласкайте открывшуюся зону языком — любой сорвавшийся стон означает, что партнер снимает еще одну вещь!', timer: 45 },
+        { title: 'Горячие Ладони', text: 'Разотрите ладони до жара (или с каплей масла). Уложите партнера на живот и сделайте глубокий, властный массаж от поясницы до внутренней поверхности бедер.', timer: 60 },
+        { title: 'Дыхание у Виска', text: 'Прижмитесь вплотную к спине партнера, обхватив за талию. Медленно шепчите на ухо во всех деталях, что именно вы сделаете с ним(ней) через 5 минут.', timer: 45 },
+        { title: 'Оргазмическая Пауза', text: 'Активно ласкайте партнера руками или губами 45 секунд, разгоняя дыхание, а по сигналу таймера резко уберите руки на 20 секунд, глядя прямо в глаза.', timer: 45 },
+        { title: 'Вкус Кожи', text: 'Капните немного напитка на ключицу или живот партнера. Медленно соберите каждую каплю губами и языком без помощи рук.', timer: 45 }
+      ],
+      ice_truth: [
+        { title: 'Скрытый триггер', text: 'ВОПРОС (15 сек на ответ): Какое мое случайное движение или прикосновение заводит тебя моментально, но ты об этом никогда не говорил(а)?', penalty: 'ШТРАФ: Снимаешь одну вещь и подставляешь шею для укуса и поцелуев на 30 секунд.', timer: 15 },
+        { title: 'Фантазия в людном месте', text: 'ВОПРОС: В каком самом рискованном месте вне дома ты бы хотел(а) заняться со мной быстрым сексом прямо сейчас?', penalty: 'ШТРАФ: Партнер проводит кубиком льда или холодными пальцами по внутренней стороне твоих бедер без права свести ноги.', timer: 15 },
+        { title: 'Грязный кадр в голове', text: 'ВОПРОС: Что именно ты представляешь в последний момент, когда доводишь себя до развязки в одиночестве?', penalty: 'ШТРАФ: 45 секунд оральных ласк или глубоких поцелуев низа живота партнера.', timer: 15 },
+        { title: 'Любимая поза без стеснения', text: 'ВОПРОС: Какую позу или практику со мной ты хочешь попробовать сегодня ночью, отбросив любое стеснение?', penalty: 'ШТРАФ: Немедленно принять позу, которую назовет партнер, на 1 минуту для любых его ласк.', timer: 15 },
+        { title: 'Звук страсти', text: 'ВОПРОС: Что тебе больше нравится слышать в постели — нежный шепот, громкие стоны или властные приказы?', penalty: 'ШТРАФ: Прошептать на ухо партнеру самую откровенную фразу, глядя после этого прямо в глаза.', timer: 15 },
+        { title: 'Полный карт-бланш', text: 'ВОПРОС: Если бы я связал(а) тебе руки на ближайшие 15 минут, чего бы ты ждал(а) сильнее всего?', penalty: 'ШТРАФ: Отдаешь свои руки в фиксацию партнеру на следующие 2 раунда!', timer: 15 },
+        { title: 'Утренняя провокация', text: 'ВОПРОС: Как именно ты хочешь, чтобы я разбудил(а) тебя завтра утром?', penalty: 'ШТРАФ: Медленный стриптиз с одного предмета одежды под пристальным взглядом партнера.', timer: 15 },
+        { title: 'Точка безумия', text: 'ВОПРОС: Покажи рукой на своем теле одну точку, ласка которой быстрее всего лишает тебя самоконтроля.', penalty: 'ШТРАФ: Партнер сам выбирает любую зону на твоем теле и ласкает её 45 секунд.', timer: 15 }
+      ],
+      bdsm: [
+        { title: 'Ошейник из ладоней', text: 'ДОМИНАЦИЯ: Ведущий мягко, но властно фиксирует шею или затылок ведомого ладонью, направляя глубину поцелуя в течение 60 секунд. Инициатива целиком у ведущего.', timer: 60 },
+        { title: 'Три круга Edging-контроля', text: 'НА ГРАНИ: Ласкайте ведомого руками или губами до приближения к пику. Как только ведомый произносит «ГРАНЬ!» — мгновенно убирайте руки на 30 секунд. Развязка запрещена!', timer: 90 },
+        { title: 'Приказ на коленях', text: 'ПОДЧИНЕНИЕ: Ведомый опускается перед ведущим с закрытыми глазами. Ведущий решает: наградить нежным поцелуем или потребовать 60 секунд оральных ласк.', timer: 60 },
+        { title: 'Контраст боли и нежности', text: 'СЕНСОРИКА: Чередуйте ощутимые шлепки по ягодицам с мгновенными горячими поцелуями и мягким поглаживанием того же места.', timer: 60 },
+        { title: 'Связанный выбор', text: 'ФИКСАЦИЯ: Руки ведомого сведены за спиной. Ведущий проводит закрытым предметом по телу, а ведомый должен просить разрешения на каждое прикосновение.', timer: 75 },
+        { title: 'Абсолютный распорядитель позы', text: 'ВЛАСТЬ: Ведущий укладывает или ставит партнера в любую выбранную позу и диктует ритм («медленно», «быстрее», «замри») на протяжении 2 минут.', timer: 120 }
+      ],
+      dist_pro: [
+        { title: 'Исчезающий кадр белья', text: 'ДИСТАНЦИЯ PRO: Сделай фото с исчезающим таймером (в Telegram) того, что сейчас надето на тебе ниже талии, и отправь партнеру.', timer: 60 },
+        { title: 'Аудио на пределе', text: 'ДИСТАНЦИЯ PRO: Положи руку под одежду. Запиши 15-секундное голосовое сообщение своего настоящего дыхания во время прикосновений к себе.', timer: 45 },
+        { title: 'Полное обнажение по команде', text: 'ДИСТАНЦИЯ PRO: Партнер прямо сейчас пишет в мини-чат снизу 2 вещи, которые ты снимаешь с себя и отбрасываешь в сторону.', timer: 45 },
+        { title: 'Синхронный финиш по счету', text: 'ДИСТАНЦИЯ PRO: Запустите таймер на 90 секунд. Вы оба ласкаете себя одновременно, описывая темп короткими фразами в чат. Остановиться ровно с нулем таймера!', timer: 90 }
+      ]
     };
 
-    // Подключение Socket.io
-    let socket = null;
-    try {
-      if (typeof io !== 'undefined') {
-        socket = io();
+    const DISTANCE_LEVELS = {
+      1: [
+        { title: 'Уровень 1 • Ментальный стриптиз', text: 'Напиши партнеру в мини-чат снизу честно: какая деталь его/её тела всплывает у тебя перед глазами первой, когда ты хочешь близости?' },
+        { title: 'Уровень 1 • Запретное воспоминание', text: 'Опиши в чате наш самый горячий момент, от которого у тебя до сих пор бегут мурашки, или сцену, которую мечтаешь повторить при встрече.' },
+        { title: 'Уровень 1 • Признание в одежде', text: 'Расскажи в чате без утайки, во что именно ты сейчас одет(а), и какого цвета на тебе белье (или его нет?).' }
+      ],
+      2: [
+        { title: 'Уровень 2 • Тактильный фантом', text: 'Закрой глаза. Проведи кончиками своих пальцев от шеи по груди до самого низа живота, представляя руку партнера. Напиши в чат, где кожа отозвалась сильнее всего.', timer: 45 },
+        { title: 'Уровень 2 • След от губ', text: 'Напиши в чат точное место на теле партнера, к которому ты сейчас прижался(ась) бы губами и языком на целую минуту.' },
+        { title: 'Уровень 2 • Горячий импульс', text: 'Расстегни верхние пуговицы или приподними край одежды. Сожми пальцами бедро или грудь и опиши свое дыхание в чат.', timer: 45 }
+      ],
+      3: [
+        { title: 'Уровень 3 • Приказ сквозь экран', text: 'Игрок, открывший карту, пишет в чат приказ: какой один предмет одежды второй партнер обязан снять прямо сейчас без возражений!' },
+        { title: 'Уровень 3 • Поза перед экраном', text: 'Опиши, как именно ты сейчас лежишь или сидишь. Партнер в чате меняет твою позу (например: «разведи колени», «ляг на спину»).', timer: 60 },
+        { title: 'Уровень 3 • Дразнящий ракурс', text: 'Отправь партнеру в личку Telegram фото ключиц, шеи или линии бедра с таймером самоуничтожения на 5 секунд.' }
+      ],
+      4: [
+        { title: 'Уровень 4 • Дистанционный Edging', text: 'Запустите синхронный таймер на 90 секунд! Рука скользит ниже пояса: ласкайте себя в том темпе, который диктует партнер в чате («медленно», «быстрее», «стоп»). Финишировать без разрешения нельзя!', timer: 90 },
+        { title: 'Уровень 4 • Голосовая развязка', text: '90 секунд непрерывной стимуляции на расстоянии. Пришлите друг другу короткое голосовое со своим дыханием на самой грани!', timer: 90 }
+      ]
+    };
 
-        socket.emit('join_global');
+    const AUCTION_LOTS = [
+      { title: 'Лот #1: Властелин Позы и Темпа', desc: 'Победитель торгов на 10 минут получает полное право выбрать любую позу и командовать скоростью движений («быстрее», «медленнее», «замри»).' },
+      { title: 'Лот #2: Оральный Карт-Бланш', desc: 'Проигравший дарит победителю 5 минут непрерывных оральных ласк с завязанными глазами у принимающей стороны.' },
+      { title: 'Лот #3: Стриптиз и Приказ', desc: 'Проигравший медленно раздевается под взглядом победителя и выполняет одно любое тактильное желание без права вето.' },
+      { title: 'Лот #4: Десять Минут Повиновения', desc: 'Руки проигравшего фиксируются за головой на 10 минут — победитель ласкает любые зоны и сам решает, когда разрешить развязку.' },
+      { title: 'Лот #5: Утренний Долг Страсти', desc: 'Победитель забирает право разбудить партнера в любое время интимными ласками по своему сценарию.' }
+    ];
+
+    const FETISH_CARDS = [
+      { title: 'Связывание рук шелком', desc: 'Мягкая фиксация запястий лентой или шарфом с полной передачей контроля партнеру.' },
+      { title: 'Секс перед большим зеркалом', desc: 'Наблюдать за каждым движением и эмоциями друг друга в отражении без выключенного света.' },
+      { title: 'Повязка на глаза и лед', desc: 'Полное отключение зрения и игра температурными контрастами по всему телу.' },
+      { title: 'Edging: Удержание на грани', desc: 'Доводить партнера почти до оргазма и останавливаться 3 раза подряд перед мощным финалом.' },
+      { title: 'Откровенный Dirty Talk', desc: 'Властные команды, грязный шепот на ухо и проговаривание всех действий во время близости.' },
+      { title: 'Оральные ласки с напитком / льдом', desc: 'Чередование горячего дыхания, глотка прохладного напитка или мятного холода.' },
+      { title: 'Спонтанный быстрый секс вне спальни', desc: 'На кухне, в душевой, у стены в прихожей или на заднем сиденье автомобиля.' },
+      { title: 'Легкие шлепки и захват за бедра/шею', desc: 'Ощутимая доминантная страсть с чередованием резких захватов и нежных поцелуев.' },
+      { title: 'Ролевой сценарий незнакомцев', desc: 'Встретиться и соблазнить друг друга так, словно вы видите партнера впервые в ночном баре.' },
+      { title: 'Приватное видео / фото только для двоих', desc: 'Снять эстетичный горячий кадр в полумраке и пересмотреть вместе.' },
+      { title: 'Массаж всего тела теплым маслом без табу', desc: 'Долгий разогревающий массаж ягодиц, груди и внутренней стороны бедер с переходом к финалу.' },
+      { title: 'Дистанционное управление через экран', desc: 'Выполнять интимные команды партнера по видео или голосовым, находясь в разных местах.' }
+    ];
+
+    // ================= ПОДКЛЮЧЕНИЕ СОКЕТОВ =================
+    let socket = null;
+    let activeArenaState = null;
+
+    function initSockets() {
+      if (typeof io === 'undefined') return;
+      socket = io();
+
+      socket.on('connect', () => {
+        socket.emit('register_user', {
+          nickname: state.nickname,
+          gender: state.gender,
+          roomId: currentRoom
+        });
         socket.emit('join_private_room', {
           roomId: currentRoom,
-          userName: user.first_name,
-          userId: user.id
+          nickname: state.nickname,
+          gender: state.gender
         });
+      });
 
-        socket.on('room_update', (d) => {
-          document.getElementById('lblOnline').innerText = d.playersCount;
+      // Онлайн игроки в общем лобби
+      socket.on('lobby_users', (users) => {
+        const box = document.getElementById('lobbyUsersContainer');
+        const others = users.filter(u => u.socketId !== socket.id);
+        if (others.length === 0) {
+          box.innerHTML = `<div style="font-size:12px; color:var(--text-dim);">Пока вы первый в зале. Поделитесь ссылкой с парой!</div>`;
+          return;
+        }
+        box.innerHTML = others.map(u => `
+          <div class="lobby-user-card">
+            <div style="font-weight:800; color:#fff;">${u.gender} ${escapeHtml(u.nickname)}</div>
+            <button class="btn btn-primary" style="padding:6px 8px; font-size:11px;" onclick="inviteLobbyUser('${u.socketId}', '${escapeHtml(u.nickname)}')">Позвать в игру</button>
+          </div>
+        `).join('');
+      });
+
+      // Входящее приглашение от другого игрока
+      socket.on('incoming_invite', ({ fromNickname, fromGender, roomId }) => {
+        pendingInviteRoom = roomId;
+        document.getElementById('inviteTextLabel').innerText = `${fromGender} ${fromNickname} приглашает вас в приватную комнату (${roomId}) для игры и шепота!`;
+        document.getElementById('incomingInviteModal').style.display = 'flex';
+        haptic('warning');
+      });
+
+      // Состояние приватной комнаты
+      socket.on('room_update', ({ players, gameState }) => {
+        document.getElementById('uiRoomCode').innerText = currentRoom;
+        document.getElementById('uiRoomCount').innerText = players.length;
+        document.getElementById('uiPlayersList').innerHTML = players.map(p =>
+          `<span class="player-tag">${p.gender} ${escapeHtml(p.nickname)}</span>`
+        ).join('');
+
+        if (gameState && document.getElementById('gameArenaModal').style.display !== 'flex') {
+          renderArenaState(gameState);
+        }
+      });
+
+      // Истории чатов
+      socket.on('global_history', (list) => {
+        document.getElementById('globalChatHistory').innerHTML = '';
+        list.forEach(m => appendChatBubble('globalChatHistory', m));
+      });
+
+      socket.on('private_history', (list) => {
+        const box = document.getElementById('privChatHistory');
+        box.innerHTML = `<div class="msg-item"><i>🔒 Приватный канал комнаты ${currentRoom}.</i></div>`;
+        list.forEach(m => {
+          appendChatBubble('privChatHistory', m);
+          appendArenaMiniChat(m);
         });
+      });
 
-        socket.on('game_action_triggered', (data) => {
-          openModal(
-            data.cardData.title,
-            data.cardData.desc,
-            `${data.chosenBy} активирует:\n${data.cardData.action}`
-          );
-          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        });
+      socket.on('receive_global_msg', (m) => appendChatBubble('globalChatHistory', m));
 
-        socket.on('receive_private_msg', (m) => addMsg('privBox', m.sender, m.text, m.time));
-        socket.on('receive_global_msg', (m) => addMsg('globalBox', m.sender, m.text, m.time));
+      socket.on('receive_private_msg', (m) => {
+        appendChatBubble('privChatHistory', m);
+        appendArenaMiniChat(m);
+        const privTabActive = document.getElementById('tab-priv-chat').classList.contains('active');
+        const arenaOpen = document.getElementById('gameArenaModal').style.display === 'flex';
+        if (!privTabActive && !arenaOpen && m.senderSocketId !== socket.id) {
+          document.getElementById('privUnread').style.display = 'inline';
+          showToast(`🔒 Шепот от ${m.sender}: ${m.text.slice(0, 28)}`);
+          haptic('light');
+        }
+      });
+
+      // Синхронизация игрового экрана
+      socket.on('game_state_updated', (st) => {
+        renderArenaState(st);
+        haptic('medium');
+      });
+
+      // Синхронный таймер
+      socket.on('timer_started', ({ endTime }) => {
+        runLocalSyncedTimer(endTime);
+      });
+
+      // Результаты Слепого Аукциона
+      socket.on('bid_waiting', ({ whoBid }) => {
+        document.getElementById('arenaSubInfo').innerText = `Ставку сделал(а): ${whoBid}. Ждем второго партнера...`;
+      });
+
+      socket.on('auction_resolved', ({ tie, winner, lotTitle }) => {
+        const penaltyBox = document.getElementById('arenaPenaltyBox');
+        penaltyBox.style.display = 'block';
+        if (tie) {
+          penaltyBox.innerHTML = `⚡ НИЧЬЯ! Ставки совпали — вы исполняете лот обоюдно!`;
+        } else {
+          penaltyBox.innerHTML = `👑 ПОВЕЛИТЕЛЬ РАУНДА: <b>${escapeHtml(winner.nickname)}</b> (ставка ${winner.amount} 🔥)!<br>Забирает право: ${escapeHtml(lotTitle)}`;
+        }
+        haptic('success');
+      });
+
+      // Результаты Тиндера Фетишей
+      socket.on('swipe_waiting_partner', () => {
+        document.getElementById('arenaSubInfo').innerText = 'Ваш выбор скрыт. Ожидаем ответ партнера...';
+      });
+
+      socket.on('swipe_round_complete', ({ bothYes, cardTitle, cardDesc, soloPreview }) => {
+        const penaltyBox = document.getElementById('arenaPenaltyBox');
+        penaltyBox.style.display = 'block';
+        if (bothYes) {
+          penaltyBox.style.borderColor = '#00f5d4';
+          penaltyBox.style.color = '#00f5d4';
+          penaltyBox.innerHTML = soloPreview
+            ? `🔥 Отмечено «Хочу»! Позовите пару в комнату, чтобы сверить тайные совпадения.`
+            : `💥 100% ВЗАИМНЫЙ МЭТЧ!<br>Вы оба хотите: <b>${escapeHtml(cardTitle)}</b> — ${escapeHtml(cardDesc)}`;
+          haptic('success');
+        } else {
+          penaltyBox.style.borderColor = 'rgba(255,255,255,0.2)';
+          penaltyBox.style.color = '#9292ab';
+          penaltyBox.innerHTML = `🤫 В этом раунде без совпадения (выбор каждого остался в секрете). Жмите «Следующая карта»!`;
+        }
+        document.getElementById('arenaDeckControls').style.display = 'flex';
+        document.getElementById('arenaFetishControls').style.display = 'none';
+      });
+
+      socket.on('game_closed', () => {
+        clearInterval(timerInterval);
+        document.getElementById('gameArenaModal').style.display = 'none';
+      });
+    }
+
+    // ================= ИГРОВАЯ ЛОГИКА И ЗАПУСК РЕЖИМОВ =================
+    function broadcastArenaState(newState) {
+      activeArenaState = newState;
+      if (socket && socket.connected) {
+        socket.emit('sync_game_state', { roomId: currentRoom, state: newState });
+      } else {
+        renderArenaState(newState);
       }
-    } catch (e) {
-      console.warn('Сокеты offline', e);
     }
 
-    // Переключение вкладок
-    function switchTab(evt, tabId) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-      evt.currentTarget.classList.add('active');
-      document.getElementById(tabId).classList.add('active');
+    function startDeckGame(deckKey) {
+      const list = DECKS[deckKey];
+      if (!list) return;
+      const idx = Math.floor(Math.random() * list.length);
+      const card = list[idx];
+      broadcastArenaState({
+        mode: 'deck',
+        deckKey,
+        cardIndex: idx,
+        modeTitle: deckKey === 'ice_truth' ? 'ЛЕДЯНОЙ ДОПРОС' : (deckKey === 'bdsm' ? 'BDSM & ПОВИНОВЕНИЕ' : (deckKey === 'dist_pro' ? 'ДИСТАНЦИЯ PRO' : 'СЕНСОРИКА & СТОП-КАДР')),
+        title: card.title,
+        text: card.text,
+        penalty: card.penalty || '',
+        timerDefault: card.timer || 45,
+        startedBy: state.nickname
+      });
     }
 
-    // Запуск игры
-    function launchGame(key) {
-      const g = GAMES_MAP[key];
-      if (!g) return;
+    function startDistanceImpulse() {
+      const lvlCards = DISTANCE_LEVELS[1];
+      const card = lvlCards[0];
+      broadcastArenaState({
+        mode: 'distance',
+        level: 1,
+        cardIndex: 0,
+        modeTitle: 'ДИСТАНЦИОННЫЙ ИМПУЛЬС',
+        title: card.title,
+        text: card.text,
+        timerDefault: card.timer || 45,
+        startedBy: state.nickname
+      });
+    }
 
-      if (socket) {
-        socket.emit('sync_game_action', {
+    function setDistanceLevel(lvl) {
+      const cards = DISTANCE_LEVELS[lvl] || DISTANCE_LEVELS[1];
+      const card = cards[Math.floor(Math.random() * cards.length)];
+      broadcastArenaState({
+        mode: 'distance',
+        level: lvl,
+        modeTitle: 'ДИСТАНЦИОННЫЙ ИМПУЛЬС',
+        title: card.title,
+        text: card.text,
+        timerDefault: card.timer || 60,
+        startedBy: state.nickname
+      });
+    }
+
+    function startBlindAuction() {
+      const lot = AUCTION_LOTS[Math.floor(Math.random() * AUCTION_LOTS.length)];
+      broadcastArenaState({
+        mode: 'auction',
+        resetBids: true,
+        modeTitle: 'СЛЕПОЙ АУКЦИОН ВЛАСТИ',
+        title: lot.title,
+        text: lot.desc,
+        startedBy: state.nickname
+      });
+    }
+
+    function startFetishMatcher() {
+      const card = FETISH_CARDS[0];
+      broadcastArenaState({
+        mode: 'fetish',
+        resetSwipes: true,
+        cardIndex: 0,
+        modeTitle: 'ТИНДЕР ФЕТИШЕЙ 18+',
+        title: `Карта 1 из ${FETISH_CARDS.length}: ${card.title}`,
+        rawTitle: card.title,
+        text: card.desc,
+        startedBy: state.nickname
+      });
+    }
+
+    function nextSyncCard() {
+      // Награждаем игрока +15 токенами за активность в раундах!
+      state.coins += 15;
+      persistState();
+      showToast('+15 🔥 Токенов Страсти за раунд!');
+
+      if (!activeArenaState) return;
+      const m = activeArenaState.mode;
+
+      if (m === 'deck') {
+        const list = DECKS[activeArenaState.deckKey] || DECKS.sensory;
+        const nextIdx = (Number(activeArenaState.cardIndex || 0) + 1) % list.length;
+        const card = list[nextIdx];
+        broadcastArenaState({
+          ...activeArenaState,
+          cardIndex: nextIdx,
+          title: card.title,
+          text: card.text,
+          penalty: card.penalty || '',
+          timerDefault: card.timer || 45
+        });
+      } else if (m === 'distance') {
+        const lvl = activeArenaState.level || 1;
+        const list = DISTANCE_LEVELS[lvl];
+        const nextIdx = (Number(activeArenaState.cardIndex || 0) + 1) % list.length;
+        const card = list[nextIdx];
+        broadcastArenaState({
+          ...activeArenaState,
+          cardIndex: nextIdx,
+          title: card.title,
+          text: card.text,
+          timerDefault: card.timer || 60
+        });
+      } else if (m === 'auction') {
+        startBlindAuction();
+      } else if (m === 'fetish') {
+        const nextIdx = (Number(activeArenaState.cardIndex || 0) + 1) % FETISH_CARDS.length;
+        const card = FETISH_CARDS[nextIdx];
+        broadcastArenaState({
+          mode: 'fetish',
+          cardIndex: nextIdx,
+          modeTitle: 'ТИНДЕР ФЕТИШЕЙ 18+',
+          title: `Карта ${nextIdx + 1} из ${FETISH_CARDS.length}: ${card.title}`,
+          rawTitle: card.title,
+          text: card.desc,
+          startedBy: state.nickname
+        });
+      }
+    }
+
+    function renderArenaState(st) {
+      activeArenaState = st;
+      clearInterval(timerInterval);
+
+      document.getElementById('gameArenaModal').style.display = 'flex';
+      document.getElementById('arenaModeName').innerText = st.modeTitle || 'РАУНД 18+';
+      document.getElementById('arenaSubInfo').innerText = `Активировал(а): ${st.startedBy || 'Партнер'}`;
+      document.getElementById('arenaCardTitle').innerText = st.title;
+      document.getElementById('arenaCardText').innerText = st.text;
+
+      const penaltyBox = document.getElementById('arenaPenaltyBox');
+      penaltyBox.style.display = 'none';
+      penaltyBox.style.borderColor = 'var(--accent)';
+      penaltyBox.style.color = '#ffb8ce';
+
+      document.getElementById('arenaTimerDisplay').style.display = 'none';
+      document.getElementById('distanceLevelBar').style.display = st.mode === 'distance' ? 'grid' : 'none';
+      document.getElementById('arenaAuctionControls').style.display = st.mode === 'auction' ? 'flex' : 'none';
+      document.getElementById('arenaFetishControls').style.display = st.mode === 'fetish' ? 'grid' : 'none';
+      document.getElementById('arenaDeckControls').style.display = st.mode === 'fetish' ? 'none' : 'flex';
+
+      if (st.mode === 'distance') {
+        const btns = document.querySelectorAll('#distanceLevelBar .lvl-btn');
+        btns.forEach((b, idx) => b.classList.toggle('active', idx + 1 === st.level));
+      }
+
+      const btnTimer = document.getElementById('btnStartTimer');
+      if (st.timerDefault && st.mode !== 'auction') {
+        btnTimer.style.display = 'inline-flex';
+        btnTimer.innerText = `⏱ Таймер ${st.timerDefault}с`;
+        btnTimer.onclick = () => triggerSyncTimer(st.timerDefault);
+      } else {
+        btnTimer.style.display = 'none';
+      }
+
+      const btnPenalty = document.getElementById('btnShowPenalty');
+      if (st.penalty) {
+        btnPenalty.style.display = 'inline-flex';
+      } else {
+        btnPenalty.style.display = 'none';
+      }
+    }
+
+    function revealPenalty() {
+      if (!activeArenaState?.penalty) return;
+      const box = document.getElementById('arenaPenaltyBox');
+      box.innerText = activeArenaState.penalty;
+      box.style.display = 'block';
+      haptic('warning');
+    }
+
+    function triggerSyncTimer(seconds) {
+      if (socket && socket.connected) {
+        socket.emit('start_sync_timer', { roomId: currentRoom, seconds });
+      } else {
+        runLocalSyncedTimer(Date.now() + seconds * 1000);
+      }
+    }
+
+    function runLocalSyncedTimer(endTime) {
+      clearInterval(timerInterval);
+      const disp = document.getElementById('arenaTimerDisplay');
+      disp.style.display = 'block';
+
+      const tick = () => {
+        const left = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+        const mins = String(Math.floor(left / 60)).padStart(2, '0');
+        const secs = String(left % 60).padStart(2, '0');
+        disp.innerText = `${mins}:${secs}`;
+        if (left <= 0) {
+          clearInterval(timerInterval);
+          disp.innerText = '🔥 ВРЕМЯ ВЫШЛО!';
+          haptic('success');
+        }
+      };
+      tick();
+      timerInterval = setInterval(tick, 250);
+    }
+
+    function submitSecretBid() {
+      const amount = Number(document.getElementById('bidRangeInput').value);
+      if (state.coins < amount) {
+        showToast('Недостаточно Токенов Страсти! Сыграйте раунды или пополните в Магазине.');
+        return;
+      }
+      state.coins -= amount;
+      persistState();
+      document.getElementById('arenaAuctionControls').style.display = 'none';
+
+      if (socket && socket.connected) {
+        socket.emit('submit_bid', {
           roomId: currentRoom,
-          cardData: g,
-          chosenBy: user.first_name
+          nickname: state.nickname,
+          amount,
+          lotTitle: activeArenaState?.title || 'Власть в раунде'
         });
       } else {
-        openModal(g.title, g.desc, g.action);
+        const box = document.getElementById('arenaPenaltyBox');
+        box.style.display = 'block';
+        box.innerHTML = `👑 Ставка ${amount} 🔥 принята! Вы забираете лот: <b>${activeArenaState?.title}</b>`;
       }
     }
 
-    function openModal(title, desc, action) {
-      document.getElementById('modalTitle').innerText = title;
-      document.getElementById('modalDesc').innerText = desc;
-      document.getElementById('modalInstr').innerText = action;
-      document.getElementById('actionModal').style.display = 'flex';
+    function sendFetishSwipe(choice) {
+      if (!activeArenaState) return;
+      if (socket && socket.connected) {
+        socket.emit('submit_swipe', {
+          roomId: currentRoom,
+          cardIndex: activeArenaState.cardIndex || 0,
+          cardTitle: activeArenaState.rawTitle || activeArenaState.title,
+          cardDesc: activeArenaState.text,
+          choice,
+          nickname: state.nickname
+        });
+      }
     }
 
-    function closeModal() {
-      document.getElementById('actionModal').style.display = 'none';
+    function closeArenaForBoth() {
+      if (socket && socket.connected) {
+        socket.emit('close_sync_game', { roomId: currentRoom });
+      } else {
+        document.getElementById('gameArenaModal').style.display = 'none';
+      }
     }
 
-    // Отправка сообщений
-    function sendPrivMsg() {
-      const inp = document.getElementById('privInput');
-      const val = inp.value.trim();
-      if (!val) return;
-      if (socket) socket.emit('send_private_msg', { roomId: currentRoom, text: val, sender: user.first_name });
+    // ================= РАБОТАЮЩИЙ МАГАЗИН =================
+    function refreshWalletAndShopUI() {
+      document.getElementById('uiCoins').innerText = state.coins;
+      document.getElementById('uiProfileBtn').innerText = `${state.gender} ${state.nickname}`;
+      document.getElementById('vipBadge').style.display = state.isVip ? 'inline-block' : 'none';
+
+      const bdsmOpen = state.isVip || state.unlocked.deck_bdsm;
+      const distProOpen = state.isVip || state.unlocked.deck_dist_pro;
+
+      // Обновление карточек в каталоге
+      const btnBdsm = document.getElementById('btnDeckBdsm');
+      const statusBdsm = document.getElementById('statusDeckBdsm');
+      const shopBtnBdsm = document.getElementById('shopBtnBdsm');
+      if (bdsmOpen) {
+        statusBdsm.innerText = '✅ Открыто';
+        btnBdsm.className = 'btn btn-primary';
+        btnBdsm.innerText = '🔥 Запустить колоду BDSM';
+        shopBtnBdsm.innerText = '✅ Уже в вашей коллекции';
+        shopBtnBdsm.disabled = true;
+      }
+
+      const btnDist = document.getElementById('btnDeckDistPro');
+      const statusDist = document.getElementById('statusDeckDistPro');
+      const shopBtnDist = document.getElementById('shopBtnDistPro');
+      if (distProOpen) {
+        statusDist.innerText = '✅ Открыто';
+        btnDist.className = 'btn btn-violet';
+        btnDist.innerText = '⚡ Запустить Дистанцию PRO';
+        shopBtnDist.innerText = '✅ Уже в вашей коллекции';
+        shopBtnDist.disabled = true;
+      }
+    }
+
+    function handleLockedDeck(unlockKey, playDeckKey) {
+      if (state.isVip || state.unlocked[unlockKey]) {
+        startDeckGame(playDeckKey);
+      } else {
+        const cost = unlockKey === 'deck_bdsm' ? 80 : 70;
+        buyWithCoins(unlockKey, cost);
+      }
+    }
+
+    function buyWithCoins(unlockKey, cost) {
+      if (state.unlocked[unlockKey] || state.isVip) {
+        showToast('Эта колода уже открыта!');
+        return;
+      }
+      if (state.coins < cost) {
+        showToast(`Нужно ${cost} 🔥 (у вас ${state.coins}). Пополните в Магазине или играйте раунды!`);
+        openTabById('tab-shop');
+        haptic('error');
+        return;
+      }
+      state.coins -= cost;
+      state.unlocked[unlockKey] = true;
+      persistState();
+      showToast('🎉 Эксклюзивная колода разблокирована навсегда!');
+      haptic('success');
+    }
+
+    async function purchaseStarsItem(itemKey, title, starsAmount) {
+      try {
+        const res = await fetch('/api/create-invoice', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, stars: starsAmount, payload: itemKey })
+        });
+        const data = await res.json();
+
+        if (data.ok && data.invoiceUrl && tg?.openInvoice) {
+          tg.openInvoice(data.invoiceUrl, (status) => {
+            if (status === 'paid') {
+              grantShopReward(itemKey);
+            }
+          });
+        } else {
+          // Если тестируем без платежного токена или из браузера — начисляем сразу
+          grantShopReward(itemKey);
+        }
+      } catch (e) {
+        grantShopReward(itemKey);
+      }
+    }
+
+    function grantShopReward(itemKey) {
+      if (itemKey === 'vip_all') {
+        state.isVip = true;
+        state.unlocked.deck_bdsm = true;
+        state.unlocked.deck_dist_pro = true;
+        state.coins += 1000;
+        showToast('💎 VIP-статус, все колоды и +1000 🔥 активированы!');
+      } else if (itemKey === 'coins_500') {
+        state.coins += 500;
+        showToast('🔥 +500 Токенов Страсти зачислено на баланс!');
+      }
+      persistState();
+      haptic('success');
+    }
+
+    // ================= ЧАТЫ, КОМНАТЫ И ПРОФИЛЬ =================
+    function sendPrivateMessage() {
+      const inp = document.getElementById('privChatInput');
+      const text = inp.value.trim();
+      if (!text) return;
+      emitPrivateChat(text);
       inp.value = '';
     }
 
-    function sendGlobalMsg() {
-      const inp = document.getElementById('globalInput');
-      const val = inp.value.trim();
-      if (!val) return;
-      if (socket) socket.emit('send_global_msg', { text: val, sender: user.first_name });
+    function sendQuickWhisper(text) {
+      emitPrivateChat(text);
+    }
+
+    function sendArenaWhisper() {
+      const inp = document.getElementById('arenaChatInput');
+      const text = inp.value.trim();
+      if (!text) return;
+      emitPrivateChat(text);
       inp.value = '';
     }
 
-    function addMsg(boxId, sender, text, time) {
-      const box = document.getElementById(boxId);
+    function emitPrivateChat(text) {
+      if (socket && socket.connected) {
+        socket.emit('send_private_msg', {
+          roomId: currentRoom,
+          text,
+          sender: `${state.gender} ${state.nickname}`
+        });
+      } else {
+        const fake = { sender: `${state.gender} ${state.nickname}`, text, time: 'сейчас', senderSocketId: 'me' };
+        appendChatBubble('privChatHistory', fake, true);
+        appendArenaMiniChat(fake);
+      }
+    }
+
+    function sendGlobalMessage() {
+      const inp = document.getElementById('globalChatInput');
+      const text = inp.value.trim();
+      if (!text) return;
+      if (socket && socket.connected) {
+        socket.emit('send_global_msg', {
+          text,
+          sender: state.nickname,
+          gender: state.gender
+        });
+      }
+      inp.value = '';
+    }
+
+    function appendChatBubble(containerId, msg, forceMine = false) {
+      const box = document.getElementById(containerId);
+      const isMine = forceMine || (socket && msg.senderSocketId === socket.id);
       const div = document.createElement('div');
-      const isMe = sender === user.first_name;
-      div.className = 'chat-bubble' + (isMe ? ' own' : '');
-      div.innerHTML = `<b>${sender}:</b> ${text} <span class="time">${time || ''}</span>`;
+      div.className = 'msg-item' + (isMine ? ' mine' : '');
+
+      const inviteBtnHtml = (!isMine && containerId === 'globalChatHistory' && msg.senderSocketId)
+        ? `<span style="cursor:pointer; color:var(--mint); text-decoration:underline; margin-left:6px;" onclick="inviteLobbyUser('${msg.senderSocketId}', '${escapeHtml(msg.sender)}')">Позвать в игру</span>`
+        : '';
+
+      div.innerHTML = `
+        <div class="msg-author">
+          <span>${msg.gender ? msg.gender + ' ' : ''}${escapeHtml(msg.sender)} ${inviteBtnHtml}</span>
+          <span style="color:var(--text-dim); font-weight:400;">${msg.time || ''}</span>
+        </div>
+        <div>${escapeHtml(msg.text)}</div>
+      `;
       box.appendChild(div);
       box.scrollTop = box.scrollHeight;
     }
 
-    // Инвайт партнера через Telegram Share
-    function invitePartner() {
-      const botName = 'pulse18_game_bot';
-      const shareUrl = `https://t.me/${botName}?startapp=${currentRoom}`;
-      const text = encodeURIComponent('🔞 Жду тебя в приватной комнате Pulse 18+. Заходи:');
-      if (tg?.openTelegramLink) {
-        tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${text}`);
-      } else {
-        window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${text}`, '_blank');
-      }
+    function appendArenaMiniChat(msg) {
+      const feed = document.getElementById('arenaChatFeed');
+      const div = document.createElement('div');
+      div.innerHTML = `<b style="color:var(--accent);">${escapeHtml(msg.sender)}:</b> ${escapeHtml(msg.text)}`;
+      feed.appendChild(div);
+      feed.scrollTop = feed.scrollHeight;
     }
 
-    // Добавление на домашний экран
-    function addToScreen() {
-      if (tg?.checkHomeScreenStatus) {
-        tg.checkHomeScreenStatus((st) => {
-          if (st === 'missed') {
-            tg.addToHomeScreen();
-          } else {
-            showToast('Иконка уже добавлена или не поддерживается');
-          }
+    function inviteLobbyUser(targetSocketId, targetName) {
+      if (!socket || !socket.connected) return;
+      socket.emit('invite_from_lobby', {
+        targetSocketId,
+        fromNickname: state.nickname,
+        fromGender: state.gender,
+        roomId: currentRoom
+      });
+      showToast(`🔥 Приглашение отправлено игроку ${targetName}!`);
+    }
+
+    function acceptIncomingInvite() {
+      document.getElementById('incomingInviteModal').style.display = 'none';
+      if (!pendingInviteRoom) return;
+      currentRoom = pendingInviteRoom;
+      if (socket && socket.connected) {
+        socket.emit('join_private_room', {
+          roomId: currentRoom,
+          nickname: state.nickname,
+          gender: state.gender
         });
+      }
+      openTabById('tab-priv-chat');
+      showToast(`Вы подключились к комнате ${currentRoom}!`);
+    }
+
+    function openJoinRoomModal() {
+      document.getElementById('inputRoomCode').value = '';
+      document.getElementById('joinRoomModal').style.display = 'flex';
+    }
+
+    function confirmJoinRoom() {
+      let code = document.getElementById('inputRoomCode').value.trim();
+      if (!code) return;
+      if (!code.startsWith('room_')) code = 'room_' + code.replace(/[^a-zA-Z0-9]/g, '');
+      currentRoom = code;
+      document.getElementById('joinRoomModal').style.display = 'none';
+      if (socket && socket.connected) {
+        socket.emit('join_private_room', {
+          roomId: currentRoom,
+          nickname: state.nickname,
+          gender: state.gender
+        });
+      }
+      showToast(`Подключено к комнате ${currentRoom}`);
+    }
+
+    function shareRoomInvite() {
+      const botUsername = 'pulse18_game_bot';
+      const inviteLink = `https://t.me/${botUsername}?startapp=${currentRoom}`;
+      const shareText = encodeURIComponent(`🔞 Жду тебя в нашей приватной комнате Pulse 18+ (Код: ${currentRoom}). Заходи играть вдвоем:`);
+      const fullShare = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${shareText}`;
+
+      if (tg?.openTelegramLink) {
+        tg.openTelegramLink(fullShare);
       } else {
-        showToast('Нажмите (⋮) в правом верхнем углу Telegram → Добавить на экран');
+        window.open(fullShare, '_blank');
       }
     }
 
-    // Логика Магазина
-    function buyItem(itemKey, price, currency) {
-      if (currency === 'coins') {
-        if (userCoins >= price) {
-          userCoins -= price;
-          document.getElementById('coinBalance').innerText = userCoins;
-          showToast('Колода успешно разблокирована!');
-          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        } else {
-          showToast('Недостаточно токенов страсти!');
-          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+    function openProfileModal() {
+      document.getElementById('inputNickname').value = state.nickname;
+      document.querySelectorAll('.gender-opt').forEach(el => {
+        el.classList.toggle('selected', el.dataset.g === state.gender);
+      });
+      document.getElementById('profileModal').style.display = 'flex';
+    }
+
+    function pickGender(el) {
+      document.querySelectorAll('.gender-opt').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    function saveProfile() {
+      const val = document.getElementById('inputNickname').value.trim();
+      const selG = document.querySelector('.gender-opt.selected')?.dataset.g || '🔥';
+      if (val) state.nickname = val;
+      state.gender = selG;
+      persistState();
+      document.getElementById('profileModal').style.display = 'none';
+
+      if (socket && socket.connected) {
+        socket.emit('register_user', { nickname: state.nickname, gender: state.gender, roomId: currentRoom });
+        socket.emit('join_private_room', { roomId: currentRoom, nickname: state.nickname, gender: state.gender });
+      }
+      showToast('Анонимный профиль обновлен!');
+    }
+
+    function addAppToHome() {
+      if (tg?.addToHomeScreen) {
+        try {
+          tg.addToHomeScreen();
+        } catch (e) {
+          showToast('Нажмите ⋮ (три точки справа вверху) → «Добавить на главный экран»');
         }
-      } else if (currency === 'stars') {
-        if (itemKey === 'vip_room') {
-          isVip = true;
-          document.getElementById('vipBadge').style.display = 'inline-block';
-          showToast('VIP статус активирован на 30 дней! 💎');
-        } else if (itemKey === 'coins_500') {
-          userCoins += 500;
-          document.getElementById('coinBalance').innerText = userCoins;
-          showToast('+500 Жетонов Страсти начислено! 🔥');
-        }
-        if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+      } else {
+        showToast('На телефоне в Telegram нажмите ⋮ справа вверху → «Добавить на главный экран»');
       }
     }
 
-    function showToast(msg) {
+    // ================= ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ UI =================
+    function switchTab(btnEl) {
+      const targetId = btnEl.getAttribute('data-target');
+      openTabById(targetId);
+    }
+
+    function openTabById(targetId) {
+      document.querySelectorAll('.tab-item').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-target') === targetId);
+      });
+      document.querySelectorAll('.view-section').forEach(sec => {
+        sec.classList.toggle('active', sec.id === targetId);
+      });
+      if (targetId === 'tab-priv-chat') {
+        document.getElementById('privUnread').style.display = 'none';
+      }
+    }
+
+    function showToast(text) {
       const t = document.getElementById('toast');
-      t.innerText = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2500);
+      t.innerText = text;
+      t.classList.add('visible');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => t.classList.remove('visible'), 2800);
     }
+
+    function haptic(type = 'light') {
+      if (!tg?.HapticFeedback) return;
+      if (type === 'success' || type === 'warning' || type === 'error') {
+        tg.HapticFeedback.notificationOccurred(type);
+      } else {
+        tg.HapticFeedback.impactOccurred(type);
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Старт приложения
+    document.getElementById('uiRoomCode').innerText = currentRoom;
+    refreshWalletAndShopUI();
+    initSockets();
   </script>
 </body>
 </html>
