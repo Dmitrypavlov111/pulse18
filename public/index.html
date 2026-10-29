@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Pulse 18+ Club</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="/socket.io/socket.io.js"></script>
@@ -13,309 +13,162 @@
       --accent: #ff2a6d;
       --accent-glow: rgba(255, 42, 109, 0.45);
       --purple: #8a2be2;
-      --gold: #ffb703;
       --text: #f5f5fb;
       --muted: #8d8da2;
       --border: rgba(255, 255, 255, 0.08);
+      --ok: #00ff88;
+      --warn: #ffb703;
     }
-
     * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+      box-sizing: border-box; margin: 0; padding: 0;
       -webkit-tap-highlight-color: transparent;
-      user-select: none;
+      -webkit-user-select: none; user-select: none;
     }
+    input { -webkit-user-select: text; user-select: text; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
     body {
       background: radial-gradient(circle at 50% 0%, #190924 0%, var(--bg) 65%);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', Roboto, sans-serif;
-      min-height: 100vh;
+      min-height: 100vh; min-height: 100dvh;
       overflow-x: hidden;
-      overflow-y: auto;
-      padding-bottom: 110px;
+      padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
     }
-
     header {
-      padding: 14px 16px;
-      text-align: center;
-      position: sticky;
-      top: 0;
+      padding: 14px 16px; text-align: center;
+      position: sticky; top: 0; z-index: 50;
       background: rgba(7, 7, 11, 0.92);
-      backdrop-filter: blur(16px);
-      z-index: 50;
+      -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
     }
-
     .badge-18 {
-      display: inline-block;
-      padding: 2px 10px;
-      font-size: 11px;
-      font-weight: 800;
-      color: #fff;
+      display: inline-block; padding: 2px 10px;
+      font-size: 11px; font-weight: 800; letter-spacing: 0.8px; color: #fff;
       background: linear-gradient(135deg, var(--accent), var(--purple));
-      border-radius: 20px;
-      letter-spacing: 0.8px;
-      box-shadow: 0 0 10px var(--accent-glow);
+      border-radius: 20px; box-shadow: 0 0 10px var(--accent-glow);
     }
-
     h1 {
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: 1px;
-      margin-top: 4px;
+      font-size: 20px; font-weight: 900; letter-spacing: 1px; margin-top: 4px;
       background: linear-gradient(90deg, #fff, #ff7ba3);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
     }
-
-    /* Навигационные табы */
-    .nav-tabs {
-      display: flex;
-      padding: 10px 12px;
-      gap: 6px;
-      overflow-x: auto;
-      white-space: nowrap;
-      scrollbar-width: none;
-    }
-    .nav-tabs::-webkit-scrollbar { display: none; }
-
-    .tab-btn {
-      flex: 1;
-      min-width: 78px;
-      padding: 8px 10px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--muted);
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
-    }
-
-    .tab-btn.active {
-      color: #fff;
-      border-color: var(--accent);
-      background: rgba(255, 42, 109, 0.18);
-      box-shadow: 0 0 10px var(--accent-glow);
-    }
-
-    /* Верхняя плашка комнаты */
     .room-panel {
-      margin: 10px 14px;
-      padding: 12px 14px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      margin: 10px 14px; padding: 12px 14px;
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 14px; display: flex; flex-direction: column; gap: 8px;
     }
-
-    .room-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12.5px;
-    }
-
-    .online-badge {
-      color: #00ff88;
-      font-weight: 700;
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 8px;
-    }
-
+    .room-meta { display: flex; justify-content: space-between; font-size: 12.5px; gap: 8px; }
+    .room-meta strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 120px; display: inline-block; vertical-align: bottom; }
+    .status { font-weight: 700; }
+    .status.on { color: var(--ok); }
+    .status.off { color: var(--warn); }
+    .btn-row { display: flex; gap: 8px; }
     .btn {
-      border: none;
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-size: 12.5px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      border: none; padding: 10px 12px; border-radius: 10px;
+      font-size: 12.5px; font-weight: 700; cursor: pointer; color: var(--text);
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
       transition: transform 0.1s;
     }
     .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-accent { background: linear-gradient(135deg, var(--accent), #d1134f); color: #fff; box-shadow: 0 4px 14px var(--accent-glow); flex: 1; }
+    .btn-secondary { background: rgba(255, 255, 255, 0.08); flex: 1; }
+    .btn-gold { background: linear-gradient(135deg, #f39c12, #d35400); color: #fff; box-shadow: 0 4px 14px rgba(243, 156, 18, 0.4); }
+    .btn-stop { background: #3a1020; border: 1px solid var(--accent); flex: 1; }
 
-    .btn-accent {
-      background: linear-gradient(135deg, var(--accent), #d1134f);
-      color: #fff;
-      box-shadow: 0 4px 14px var(--accent-glow);
-      flex: 1;
+    .nav-tabs {
+      display: flex; padding: 10px 12px; gap: 6px;
+      overflow-x: auto; white-space: nowrap; scrollbar-width: none;
     }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex: 1; min-width: 78px; padding: 8px 10px;
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
+      color: var(--muted); font-size: 11.5px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    }
+    .tab-btn.active { color: #fff; border-color: var(--accent); background: rgba(255, 42, 109, 0.18); box-shadow: 0 0 10px var(--accent-glow); }
 
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text);
-      flex: 1;
-    }
-
-    .btn-gold {
-      background: linear-gradient(135deg, #f39c12, #d35400);
-      color: #fff;
-      box-shadow: 0 4px 14px rgba(243, 156, 18, 0.4);
-    }
-
-    /* Контент вкладок */
-    .tab-content {
-      display: none;
-      padding: 10px 14px;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .tab-content { display: none; padding: 10px 14px; flex-direction: column; gap: 12px; }
     .tab-content.active { display: flex; }
+    .hint { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
 
     .game-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      position: relative;
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+      padding: 16px; display: flex; flex-direction: column; gap: 6px; position: relative;
     }
-
     .game-card::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 4px;
-      background: var(--accent);
-      border-radius: 16px 0 0 16px;
+      content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px;
+      background: var(--accent); border-radius: 16px 0 0 16px;
     }
+    .game-cat { font-size: 11px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; }
+    .game-card h3 { font-size: 15.5px; color: #fff; }
+    .game-card p { font-size: 13px; color: var(--muted); line-height: 1.4; }
 
-    .game-cat {
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .game-card h3 {
-      font-size: 15.5px;
-      color: #fff;
-    }
-
-    .game-card p {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-
-    /* Чат */
     .chat-box {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      display: flex;
-      flex-direction: column;
-      height: 380px;
-      overflow: hidden;
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
+      display: flex; flex-direction: column; height: 380px; height: min(380px, 60dvh); overflow: hidden;
     }
-
-    .chat-messages {
-      flex: 1;
-      padding: 12px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .chat-bubble {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-      padding: 8px 12px;
-      font-size: 13px;
-      word-break: break-word;
-    }
+    .chat-messages { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+    .chat-bubble { background: rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 8px 12px; font-size: 13px; word-break: break-word; }
     .chat-bubble b { color: var(--accent); }
     .chat-bubble .time { font-size: 10px; color: var(--muted); margin-left: 6px; }
-
-    .chat-input-bar {
-      display: flex;
-      gap: 8px;
-      padding: 10px;
-      background: rgba(0, 0, 0, 0.4);
-      border-top: 1px solid var(--border);
-    }
-
+    .chat-bubble.sys { color: var(--muted); font-style: italic; }
+    .chat-input-bar { display: flex; gap: 8px; padding: 10px; background: rgba(0, 0, 0, 0.4); border-top: 1px solid var(--border); }
     .chat-input-bar input {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 12px;
-      color: #fff;
-      font-size: 13px;
-      outline: none;
+      flex: 1; min-width: 0; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 12px; color: #fff; font-size: 16px; outline: none;
     }
 
-    /* Модальное окно */
-    #actionModal {
-      display: none;
-      position: fixed;
-      inset: 0;
+    .overlay {
+      display: none; position: fixed; inset: 0; z-index: 100; padding: 24px;
       background: rgba(0, 0, 0, 0.92);
-      backdrop-filter: blur(12px);
-      z-index: 100;
-      padding: 24px;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
+      -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+      flex-direction: column; justify-content: center; align-items: center; text-align: center;
     }
-
+    .overlay.show { display: flex; }
     .modal-box {
-      background: #141420;
-      border: 1px solid var(--accent);
-      border-radius: 20px;
-      padding: 22px;
-      width: 100%;
-      max-width: 340px;
-      box-shadow: 0 0 30px var(--accent-glow);
+      background: #141420; border: 1px solid var(--accent); border-radius: 20px;
+      padding: 22px; width: 100%; max-width: 340px; box-shadow: 0 0 30px var(--accent-glow);
     }
-
     .modal-box h2 { font-size: 18px; color: #fff; margin-bottom: 8px; }
     .modal-box p { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.45; }
     .modal-instr {
-      background: rgba(255, 42, 109, 0.15);
-      border: 1px solid var(--accent);
-      padding: 12px;
-      border-radius: 10px;
-      font-weight: 700;
-      color: #fff;
-      font-size: 13.5px;
-      margin-bottom: 16px;
-      line-height: 1.4;
+      background: rgba(255, 42, 109, 0.15); border: 1px solid var(--accent);
+      padding: 12px; border-radius: 10px; font-weight: 700; color: #fff;
+      font-size: 13.5px; margin-bottom: 12px; line-height: 1.4; white-space: pre-line;
     }
+    .modal-note { font-size: 11.5px; color: var(--muted); margin-bottom: 14px; }
+    .modal-actions { display: flex; gap: 8px; }
+
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
   </style>
 </head>
 <body>
+
+  <!-- Подтверждение возраста -->
+  <div class="overlay" id="ageGate">
+    <div class="modal-box">
+      <h2>Только для взрослых</h2>
+      <p>Приложение содержит откровенный контент для пар. Продолжая, вы подтверждаете, что вам исполнилось 18 лет и что все участники действуют добровольно.</p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="ageDecline()">Мне нет 18</button>
+        <button class="btn btn-accent" onclick="ageConfirm()">Мне есть 18</button>
+      </div>
+    </div>
+  </div>
 
   <header>
     <div class="badge-18">🔞 SECRET CLUB</div>
     <h1>PULSE 18+</h1>
   </header>
 
-  <!-- Инфо о комнате и инвайт -->
   <section class="room-panel">
     <div class="room-meta">
       <span>Комната: <strong id="lblRoom">...</strong></span>
-      <span>Онлайн: <strong class="online-badge" id="lblOnline">1</strong> 👤</span>
+      <span class="status off" id="lblStatus">Нет связи</span>
+      <span>Онлайн: <strong class="status on" id="lblOnline">0</strong> 👤</span>
     </div>
     <div class="btn-row">
       <button class="btn btn-accent" onclick="invitePartner()">🔗 Позвать пару</button>
@@ -323,320 +176,361 @@
     </div>
   </section>
 
-  <!-- Меню табов -->
-  <nav class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('tab-local')">🎮 В спальне</button>
-    <button class="tab-btn" onclick="switchTab('tab-distance')">⚡ На дистанции</button>
-    <button class="tab-btn" onclick="switchTab('tab-priv')">🔒 Шепот</button>
-    <button class="tab-btn" onclick="switchTab('tab-global')">💬 Общий чат</button>
-    <button class="tab-btn" onclick="switchTab('tab-shop')">💎 Магазин</button>
+  <nav class="nav-tabs" role="tablist">
+    <button class="tab-btn active" data-tab="tab-local">🎮 В спальне</button>
+    <button class="tab-btn" data-tab="tab-distance">⚡ На дистанции</button>
+    <button class="tab-btn" data-tab="tab-priv">🔒 Шепот</button>
+    <button class="tab-btn" data-tab="tab-global">💬 Общий чат</button>
+    <button class="tab-btn" data-tab="tab-shop">💎 Магазин</button>
   </nav>
 
-  <!-- 1. В СПАЛЬНЕ -->
   <main id="tab-local" class="tab-content active">
+    <p class="hint">Любой из вас может сказать «стоп» в любой момент. Игра на этом заканчивается без обсуждений.</p>
     <div class="game-card">
-      <div class="game-cat">Выдержка & Контроль</div>
+      <div class="game-cat">Выдержка и контроль</div>
       <h3>Слепой стоп-кадр: 3 касания на грани</h3>
-      <p>По команде «ЗАМРИ!» ведомый застывает на 45 секунд без права шевелиться, пока ведущий ласкает чувствительные точки.</p>
-      <button class="btn btn-accent" onclick="launchGame('freeze')">🔥 Запустить вдвоем</button>
+      <p>По команде «ЗАМРИ!» ведомый застывает на 45 секунд, пока ведущий ласкает чувствительные точки.</p>
+      <button class="btn btn-accent" data-game="freeze">🔥 Запустить вдвоем</button>
     </div>
-
     <div class="game-card">
-      <div class="game-cat">Табу & Откровенность</div>
-      <h3>Ледяной допрос: Секрет за глоток</h3>
-      <p>15 секунд на откровенное признание. За уклонение — кубик льда скользит по внутренней стороне бедер без права свести ноги.</p>
-      <button class="btn btn-accent" onclick="launchGame('ice_truth')">🔥 Запустить вдвоем</button>
+      <div class="game-cat">Откровенность</div>
+      <h3>Ледяной допрос: секрет за глоток</h3>
+      <p>15 секунд на откровенное признание. Если не хочется отвечать, можно взять кубик льда и провести им по бедру партнера.</p>
+      <button class="btn btn-accent" data-game="ice_truth">🔥 Запустить вдвоем</button>
     </div>
-
     <div class="game-card">
       <div class="game-cat">Доминирование</div>
       <h3>Аукцион подчинения: 10 минут власти</h3>
-      <p>Слепые ставки за право безоговорочно диктовать любую позу, темп и приказы в спальне без права вето.</p>
-      <button class="btn btn-accent" onclick="launchGame('auction')">🔥 Запустить вдвоем</button>
+      <p>Слепые ставки за право диктовать позу, темп и команды в рамках заранее оговоренных границ.</p>
+      <button class="btn btn-accent" data-game="auction">🔥 Запустить вдвоем</button>
     </div>
-
     <div class="game-card">
-      <div class="game-cat">Сенсорика & Контраст</div>
+      <div class="game-cat">Сенсорика и контраст</div>
       <h3>Температурный капкан: 4 рубежа</h3>
-      <p>Чередование кубика льда, горячего массажного масла и дыхания с завязанными глазами.</p>
-      <button class="btn btn-accent" onclick="launchGame('sensory')">🔥 Запустить вдвоем</button>
+      <p>Чередование кубика льда, тёплого массажного масла и дыхания с завязанными глазами.</p>
+      <button class="btn btn-accent" data-game="sensory">🔥 Запустить вдвоем</button>
     </div>
   </main>
 
-  <!-- 2. НА ДИСТАНЦИИ -->
   <main id="tab-distance" class="tab-content">
-    <div style="font-size: 12.5px; color: var(--muted); margin-bottom: 4px;">
-      ⚡ <b>Дистанционный импульс:</b> синхронные раунды для пар в разлуке, пробивающие любые барьеры стыда.
-    </div>
-
+    <p class="hint">⚡ Синхронные раунды для пар в разлуке. Отвечайте только на то, что вам комфортно.</p>
     <div class="game-card">
-      <div class="game-cat">Уровень 1: Ментальный стриптиз</div>
+      <div class="game-cat">Уровень 1: ментальный стриптиз</div>
       <h3>Вскрытие триггеров</h3>
-      <p>«Какая мысль обо мне заставляет твое дыхание сбиваться, когда ты один(одна)?» Шепни ответ в чат.</p>
-      <button class="btn btn-accent" onclick="launchGame('dist_1')">⚡ Отправить вопрос</button>
+      <p>«Какая мысль обо мне заставляет твоё дыхание сбиваться, когда ты один(одна)?» Шепни ответ в чат.</p>
+      <button class="btn btn-accent" data-game="dist_1">⚡ Отправить вопрос</button>
     </div>
-
     <div class="game-card">
-      <div class="game-cat">Уровень 2: Тактильный фантом</div>
+      <div class="game-cat">Уровень 2: тактильный фантом</div>
       <h3>Фантомное касание</h3>
       <p>«Где бы оказались мои пальцы, стой я сейчас за твоей спиной?» Коснись этого места и опиши жар в чат.</p>
-      <button class="btn btn-accent" onclick="launchGame('dist_2')">⚡ Отправить вызов</button>
+      <button class="btn btn-accent" data-game="dist_2">⚡ Отправить вызов</button>
     </div>
-
     <div class="game-card">
-      <div class="game-cat">Уровень 3: Власть сквозь экран</div>
+      <div class="game-cat">Уровень 3: власть сквозь экран</div>
       <h3>Приказ на раздевание</h3>
-      <p>Партнер вслух или текстом указывает, какую вещь ты обязан(а) снять в эту секунду без возражений.</p>
-      <button class="btn btn-accent" onclick="launchGame('dist_3')">⚡ Запустить приказ</button>
+      <p>Партнер указывает, какую вещь снять прямо сейчас. Отказаться можно в любой момент.</p>
+      <button class="btn btn-accent" data-game="dist_3">⚡ Запустить приказ</button>
     </div>
-
     <div class="game-card">
-      <div class="game-cat">Уровень 4: Дистанционный Edging</div>
+      <div class="game-cat">Уровень 4: дистанционный edging</div>
       <h3>Оргазмический замок по связи</h3>
-      <p>Таймер 90 секунд. Ласки разрешены исключительно по командам ведущего. Финал без разрешения запрещен!</p>
-      <button class="btn btn-accent" onclick="launchGame('dist_4')">⚡ Запустить раунд</button>
+      <p>Таймер 90 секунд. Ласки по командам ведущего, финал только с разрешения.</p>
+      <button class="btn btn-accent" data-game="dist_4">⚡ Запустить раунд</button>
     </div>
   </main>
 
-  <!-- 3. ПРИВАТНЫЙ ЧАТ -->
   <main id="tab-priv" class="tab-content">
     <div class="chat-box">
       <div class="chat-messages" id="privBox">
-        <div class="chat-bubble"><i>🔒 Этот чат виден только тебе и твоей паре в текущей комнате.</i></div>
+        <div class="chat-bubble sys">🔒 Этот чат виден только участникам текущей комнаты.</div>
       </div>
       <div class="chat-input-bar">
-        <input type="text" id="privInput" placeholder="Шепнуть сообщение..." onkeydown="if(event.key==='Enter') sendPrivMsg()">
-        <button class="btn btn-accent" style="padding: 8px 12px;" onclick="sendPrivMsg()">➤</button>
+        <input type="text" id="privInput" maxlength="300" placeholder="Шепнуть сообщение...">
+        <button class="btn btn-accent" style="padding: 8px 12px;" data-send="priv" aria-label="Отправить">➤</button>
       </div>
     </div>
   </main>
 
-  <!-- 4. ОБЩИЙ ЧАТ -->
   <main id="tab-global" class="tab-content">
     <div class="chat-box">
       <div class="chat-messages" id="globalBox">
-        <div class="chat-bubble"><i>🌐 Публичный хаб клуба. Знакомьтесь и приглашайте в приватные комнаты.</i></div>
+        <div class="chat-bubble sys">🌐 Публичный хаб клуба. Будьте вежливы: сообщения от других участников не проверяются.</div>
       </div>
       <div class="chat-input-bar">
-        <input type="text" id="globalInput" placeholder="Сообщение в клуб..." onkeydown="if(event.key==='Enter') sendGlobalMsg()">
-        <button class="btn btn-accent" style="padding: 8px 12px;" onclick="sendGlobalMsg()">➤</button>
+        <input type="text" id="globalInput" maxlength="300" placeholder="Сообщение в клуб...">
+        <button class="btn btn-accent" style="padding: 8px 12px;" data-send="global" aria-label="Отправить">➤</button>
       </div>
     </div>
   </main>
 
-  <!-- 5. МАГАЗИН ЖЕЛАНИЙ -->
   <main id="tab-shop" class="tab-content">
-    <div style="font-size: 12.5px; color: var(--muted); margin-bottom: 4px;">
-      💎 Пополняй баллы для аукционов и открывай доступ к эксклюзивным колодам без цензуры через Telegram Stars.
-    </div>
-
+    <p class="hint">💎 Баллы для аукционов и эксклюзивные колоды через Telegram Stars. Цены и выдача товара проверяются на сервере.</p>
     <div class="game-card">
-      <div class="game-cat">VIP Доступ</div>
+      <div class="game-cat">VIP-доступ</div>
       <h3>Приватная комната без цензуры</h3>
-      <p>Безлимитные таймеры, доступ к запретным колодам «BDSM & Kink» и приоритетная связь.</p>
-      <button class="btn btn-gold" onclick="buyItem('vip_room', 150)">⭐ 150 Stars</button>
+      <p>Безлимитные таймеры, доступ к колодам «BDSM &amp; Kink» и приоритетная связь.</p>
+      <button class="btn btn-gold" data-buy="vip_room">⭐ 150 Stars</button>
     </div>
-
     <div class="game-card">
       <div class="game-cat">Игровая валюта</div>
-      <h3>Пак «500 Жетонов Страсти»</h3>
-      <p>Токены для тайных ставок в «Аукционе подчинения» и покупки штрафных карт для партнера.</p>
-      <button class="btn btn-gold" onclick="buyItem('tokens_500', 75)">⭐ 75 Stars</button>
+      <h3>Пак «500 жетонов страсти»</h3>
+      <p>Токены для ставок в «Аукционе подчинения» и покупки штрафных карт.</p>
+      <button class="btn btn-gold" data-buy="tokens_500">⭐ 75 Stars</button>
     </div>
-
     <div class="game-card">
       <div class="game-cat">Эксклюзивная колода</div>
       <h3>Колода «Грязные секреты на дистанции»</h3>
-      <p>50 провокационных аудио-заданий и психологических триггеров для пар на расстоянии.</p>
-      <button class="btn btn-gold" onclick="buyItem('pack_distance', 99)">⭐ 99 Stars</button>
+      <p>50 провокационных аудио-заданий для пар на расстоянии.</p>
+      <button class="btn btn-gold" data-buy="pack_distance">⭐ 99 Stars</button>
     </div>
   </main>
 
-  <!-- Модальное окно раунда -->
-  <div id="actionModal">
+  <div class="overlay" id="actionModal">
     <div class="modal-box">
       <h2 id="modalTitle">Сценарий</h2>
       <p id="modalDesc">Описание</p>
       <div class="modal-instr" id="modalInstr">Команда</div>
-      <button class="btn btn-secondary" style="width: 100%;" onclick="closeModal()">Завершить раунд</button>
+      <div class="modal-note">Сказать «стоп» можно в любой момент.</div>
+      <div class="modal-actions">
+        <button class="btn btn-stop" onclick="closeModal(true)">🛑 Стоп</button>
+        <button class="btn btn-secondary" onclick="closeModal(true)">Завершить</button>
+      </div>
     </div>
   </div>
 
   <script>
+    const $ = (id) => document.getElementById(id);
     const tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.ready();
-      tg.expand();
+    if (tg) { tg.ready(); tg.expand(); }
+
+    // ---------- Утилиты ----------
+    function notify(msg) {
+      if (tg?.showAlert) tg.showAlert(msg); else alert(msg);
+    }
+    function store(key, val) {
+      try { if (val === undefined) return localStorage.getItem(key); localStorage.setItem(key, val); } catch (e) { return null; }
+    }
+    const ROOM_RE = /^[A-Za-z0-9_-]{8,64}$/;
+    function newRoomId() {
+      const raw = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()) + Date.now()).replace(/[^A-Za-z0-9]/g, '');
+      return 'r' + raw.slice(0, 20);
     }
 
-    const user = tg?.initDataUnsafe?.user || {
-      first_name: 'Партнер',
-      id: 'u_' + Math.floor(Math.random() * 1000)
-    };
+    // ---------- Пользователь и комната ----------
+    const user = tg?.initDataUnsafe?.user || { first_name: 'Партнёр', id: 'guest' };
+    const initData = tg?.initData || '';
+    const urlParams = new URLSearchParams(location.search);
+    const candidate = tg?.initDataUnsafe?.start_param || urlParams.get('room') || '';
+    const currentRoom = ROOM_RE.test(candidate) ? candidate : newRoomId();
+    $('lblRoom').textContent = currentRoom;
+    $('lblRoom').title = currentRoom;
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const startParam = tg?.initDataUnsafe?.start_param;
-    const currentRoom = startParam || urlParams.get('room') || 'room_' + Math.floor(1000 + Math.random() * 9000);
-    document.getElementById('lblRoom').innerText = currentRoom;
+    // ---------- Подтверждение возраста ----------
+    function ageConfirm() { store('pulse_18', '1'); $('ageGate').classList.remove('show'); }
+    function ageDecline() { if (tg?.close) tg.close(); else location.href = 'about:blank'; }
+    if (store('pulse_18') !== '1') $('ageGate').classList.add('show');
 
+    // ---------- Игры (текст только локально, по сети уходит ключ) ----------
     const GAMES_MAP = {
       freeze: {
         title: 'Слепой стоп-кадр: 3 касания на грани',
-        desc: 'Ведомый замирает на 45 секунд. Ведущий медленно ласкает самые чувствительные зоны.',
-        action: 'Команда: «ЗАМРИ!» — полная неподвижность на следующие 45 секунд.'
+        desc: 'Ведомый замирает на 45 секунд. Ведущий медленно ласкает чувствительные зоны.',
+        action: 'Команда: «ЗАМРИ!» — неподвижность на следующие 45 секунд.'
       },
       ice_truth: {
-        title: 'Ледяной допрос: Секрет за глоток',
-        desc: '15 секунд на откровенный ответ. За уклонение — лед скользит по внутренней стороне бедер.',
-        action: 'Вопрос: «О каком тайном сценарии или фетише ты молчишь из-за неловкости?»'
+        title: 'Ледяной допрос: секрет за глоток',
+        desc: '15 секунд на откровенный ответ. Если не хочется отвечать, можно выбрать лёд вместо ответа.',
+        action: 'Вопрос: «О каком тайном сценарии ты молчишь из-за неловкости?»'
       },
       auction: {
         title: 'Аукцион подчинения: 10 минут власти',
-        desc: 'Торг за безоговорочное право диктовать условия.',
-        action: 'Победитель забирает статус «Повелитель» на 10 минут: задает любую позу и ритм!'
+        desc: 'Торг за право диктовать условия в рамках оговоренных границ.',
+        action: 'Победитель получает статус «Повелитель» на 10 минут: задаёт позу и ритм.'
       },
       sensory: {
         title: 'Температурный капкан: 4 рубежа',
         desc: 'Контраст холода и тепла с закрытыми глазами.',
-        action: 'Рубеж 1: Кубик льда медленно скользит по шее и ключицам.'
+        action: 'Рубеж 1: кубик льда медленно скользит по шее и ключицам.'
       },
       dist_1: {
-        title: 'Уровень 1: Ментальный стриптиз',
-        desc: 'Честное признание на расстоянии без зрительного контакта.',
-        action: 'Задание: Отправь партнеру в приватный чат аудиошепотом свой самый откровенный триггер.'
+        title: 'Уровень 1: ментальный стриптиз',
+        desc: 'Честное признание на расстоянии.',
+        action: 'Задание: отправь партнёру в приватный чат свой самый откровенный триггер.'
       },
       dist_2: {
-        title: 'Уровень 2: Тактильный фантом',
+        title: 'Уровень 2: тактильный фантом',
         desc: 'Перевод мыслей в телесный импульс сквозь экран.',
-        action: 'Задание: Положи ладонь на ключицу, закрой глаза на 30 секунд и опиши жар в чат.'
+        action: 'Задание: положи ладонь на ключицу, закрой глаза на 30 секунд и опиши ощущения в чат.'
       },
       dist_3: {
-        title: 'Уровень 3: Власть сквозь экран',
-        desc: 'Отказ от инициативы на расстоянии.',
-        action: 'Приказ: Партнер пишет в чат, какую именно вещь ты обязан(а) снять прямо сейчас.'
+        title: 'Уровень 3: власть сквозь экран',
+        desc: 'Партнёр берёт инициативу на себя.',
+        action: 'Приказ: партнёр пишет в чат, какую вещь снять прямо сейчас. Отказаться можно всегда.'
       },
       dist_4: {
-        title: 'Уровень 4: Дистанционный Edging',
-        desc: 'Синхронное удержание на грани оргазма.',
-        action: 'Запуск таймера на 90 секунд: ласки только по командам партнера. Финишировать нельзя!'
+        title: 'Уровень 4: дистанционный edging',
+        desc: 'Синхронное удержание на грани.',
+        action: 'Таймер 90 секунд: ласки только по командам партнёра. Финал только с разрешения.'
       }
     };
 
+    // ---------- Сокет ----------
     let socket = null;
-    try {
-      if (typeof io !== 'undefined') {
-        socket = io();
+    function setStatus(on) {
+      const el = $('lblStatus');
+      el.textContent = on ? 'На связи' : 'Нет связи';
+      el.className = 'status ' + (on ? 'on' : 'off');
+    }
+    function isOnline() { return !!(socket && socket.connected); }
 
-        socket.emit('join_global');
-        socket.emit('join_private_room', {
-          roomId: currentRoom,
-          userName: user.first_name,
-          userId: user.id
-        });
+    if (typeof io !== 'undefined') {
+      socket = io();
 
-        socket.on('room_update', (d) => {
-          document.getElementById('lblOnline').innerText = d.playersCount;
-        });
+      // Вход в комнаты при каждом (пере)подключении
+      socket.on('connect', () => {
+        setStatus(true);
+        socket.emit('join_global', { initData });
+        socket.emit('join_private_room', { roomId: currentRoom, initData });
+      });
+      socket.on('disconnect', () => setStatus(false));
+      socket.on('connect_error', () => setStatus(false));
 
-        socket.on('game_action_triggered', (data) => {
-          openModal(
-            data.cardData.title,
-            data.cardData.desc,
-            `${data.chosenBy} запускает:\n${data.cardData.action}`
-          );
-          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        });
+      socket.on('room_update', (d) => { $('lblOnline').textContent = d.playersCount ?? 0; });
 
-        socket.on('receive_private_msg', (m) => addMsg('privBox', m.sender, m.text, m.time));
-        socket.on('receive_global_msg', (m) => addMsg('globalBox', m.sender, m.text, m.time));
-      }
-    } catch (e) {
-      console.warn('Автономный режим', e);
+      socket.on('game_action_triggered', (data) => {
+        const g = GAMES_MAP[data.key];
+        if (!g) return;
+        openModal(g.title, g.desc, `${String(data.chosenBy || 'Партнёр')} запускает:\n${g.action}`);
+        tg?.HapticFeedback?.notificationOccurred('success');
+      });
+      socket.on('game_closed', () => closeModal(false));
+
+      socket.on('receive_private_msg', (m) => addMsg('privBox', m.sender, m.text, m.time));
+      socket.on('receive_global_msg', (m) => addMsg('globalBox', m.sender, m.text, m.time));
     }
 
-    function switchTab(id) {
+    // ---------- Вкладки ----------
+    function switchTab(id, btn) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      event.currentTarget.classList.add('active');
-      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+      $(id).classList.add('active');
     }
+    document.querySelectorAll('.tab-btn').forEach(b =>
+      b.addEventListener('click', () => switchTab(b.dataset.tab, b)));
 
+    // ---------- Игры ----------
     function launchGame(key) {
       const g = GAMES_MAP[key];
       if (!g) return;
-      if (socket) {
-        socket.emit('sync_game_action', { roomId: currentRoom, cardData: g, chosenBy: user.first_name });
+      if (isOnline()) {
+        socket.emit('sync_game_action', { roomId: currentRoom, key });
       } else {
         openModal(g.title, g.desc, g.action);
       }
     }
+    document.querySelectorAll('[data-game]').forEach(b =>
+      b.addEventListener('click', () => launchGame(b.dataset.game)));
 
     function openModal(t, d, a) {
-      document.getElementById('modalTitle').innerText = t;
-      document.getElementById('modalDesc').innerText = d;
-      document.getElementById('modalInstr').innerText = a;
-      document.getElementById('actionModal').style.display = 'flex';
+      $('modalTitle').textContent = t;
+      $('modalDesc').textContent = d;
+      $('modalInstr').textContent = a;
+      $('actionModal').classList.add('show');
+    }
+    function closeModal(broadcast) {
+      $('actionModal').classList.remove('show');
+      if (broadcast && isOnline()) socket.emit('game_close', { roomId: currentRoom });
     }
 
-    function closeModal() {
-      document.getElementById('actionModal').style.display = 'none';
-    }
+    // ---------- Чаты ----------
+    const MAX_MSGS = 100;
+    let lastSent = 0;
 
-    function sendPrivMsg() {
-      const i = document.getElementById('privInput');
-      const val = i.value.trim();
+    function sendMsg(kind) {
+      const input = $(kind === 'priv' ? 'privInput' : 'globalInput');
+      const val = input.value.trim().slice(0, 300);
       if (!val) return;
-      if (socket) socket.emit('send_private_msg', { roomId: currentRoom, text: val, sender: user.first_name });
-      i.value = '';
+      if (!isOnline()) { notify('Нет соединения с сервером. Сообщение не отправлено.'); return; }
+      const now = Date.now();
+      if (now - lastSent < 700) return;
+      lastSent = now;
+      if (kind === 'priv') socket.emit('send_private_msg', { roomId: currentRoom, text: val });
+      else socket.emit('send_global_msg', { text: val });
+      input.value = '';
     }
+    document.querySelectorAll('[data-send]').forEach(b =>
+      b.addEventListener('click', () => sendMsg(b.dataset.send)));
+    [['privInput', 'priv'], ['globalInput', 'global']].forEach(([id, kind]) =>
+      $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMsg(kind); }));
 
-    function sendGlobalMsg() {
-      const i = document.getElementById('globalInput');
-      const val = i.value.trim();
-      if (!val) return;
-      if (socket) socket.emit('send_global_msg', { text: val, sender: user.first_name });
-      i.value = '';
-    }
-
+    // Безопасный вывод: только textContent
     function addMsg(boxId, sender, text, time) {
-      const box = document.getElementById(boxId);
+      const box = $(boxId);
       const d = document.createElement('div');
       d.className = 'chat-bubble';
-      d.innerHTML = `<b>${sender}:</b> ${text} <span class="time">${time || ''}</span>`;
+      const b = document.createElement('b');
+      b.textContent = String(sender ?? '?').slice(0, 40) + ': ';
+      const t = document.createElement('span');
+      t.textContent = String(text ?? '').slice(0, 300);
+      const tm = document.createElement('span');
+      tm.className = 'time';
+      tm.textContent = String(time ?? '').slice(0, 10);
+      d.append(b, t, tm);
+      const stick = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
       box.appendChild(d);
-      box.scrollTop = box.scrollHeight;
+      while (box.children.length > MAX_MSGS) box.removeChild(box.firstChild);
+      if (stick) box.scrollTop = box.scrollHeight;
     }
 
+    // ---------- Приглашение и ярлык ----------
     function invitePartner() {
       const botName = 'pulse18_game_bot';
       const shareUrl = `https://t.me/${botName}?startapp=${currentRoom}`;
-      const text = encodeURIComponent('🔞 Жду тебя в приватной комнате клуба Pulse 18+. Заходи:');
-      if (tg?.openTelegramLink) {
-        tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${text}`);
-      } else {
-        window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${text}`, '_blank');
-      }
+      const text = '🔞 Жду тебя в приватной комнате клуба Pulse 18+. Заходи:';
+      const link = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`;
+      if (tg?.openTelegramLink) tg.openTelegramLink(link);
+      else window.open(link, '_blank');
     }
 
     function addToScreen() {
       if (tg?.checkHomeScreenStatus) {
         tg.checkHomeScreenStatus((st) => {
           if (st === 'missed') tg.addToHomeScreen();
-          else alert('Иконка уже на экране или не поддерживается устройством');
+          else if (st === 'unsupported') notify('Ваше устройство не поддерживает добавление на главный экран.');
+          else notify('Иконка уже на главном экране.');
         });
       } else {
-        alert('Чтобы добавить иконку: откройте со смартфона, нажмите (⋮) в правом верхнем углу Telegram и выберите «Добавить на главный экран».');
+        notify('Нажмите (⋮) в правом верхнем углу Telegram и выберите «Добавить на главный экран».');
       }
     }
 
-    function buyItem(itemKey, priceStars) {
-      if (tg?.openInvoice) {
-        // Вызов окна нативного инвойса Telegram Stars
-        alert(`Покупка ${itemKey} за ${priceStars} Stars инициирована.`);
-      } else {
-        alert(`Покупка ${itemKey} стоит ${priceStars} Stars. Откройте в мобильном приложении Telegram для оплаты.`);
+    // ---------- Покупки (цена и выдача — на сервере) ----------
+    async function buyItem(item, btn) {
+      if (!tg?.openInvoice) { notify('Оплата доступна в мобильном приложении Telegram.'); return; }
+      btn.disabled = true;
+      try {
+        const r = await fetch('/api/invoice', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ item, initData })
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const { link } = await r.json();
+        if (!link) throw new Error('no link');
+        tg.openInvoice(link, (status) => {
+          if (status === 'paid') notify('Оплата прошла. Покупка скоро появится в аккаунте.');
+          else if (status === 'failed') notify('Оплата не прошла. Попробуйте ещё раз.');
+        });
+      } catch (e) {
+        notify('Не удалось создать счёт. Попробуйте позже.');
+      } finally {
+        btn.disabled = false;
       }
     }
+    document.querySelectorAll('[data-buy]').forEach(b =>
+      b.addEventListener('click', () => buyItem(b.dataset.buy, b)));
   </script>
 </body>
 </html>
